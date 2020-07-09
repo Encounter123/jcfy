@@ -1,0 +1,4 @@
+node_modules/
+.project
+minApp/FastMovement/unpackage/
+.DS_Store
