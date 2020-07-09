@@ -1,0 +1,220 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/start"
+		},
+		{
+			"path": "pages/signIn/signIn",
+			"style": {
+				"navigationBarTitleText": "登录页面",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/signIn/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/homePage/homePage",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationBarBackgroundColor": "#fff",
+				"enablePullDownRefresh": true, //设置为true表示当前页面开启下拉刷新
+				"backgroundTextStyle": "dark" //下拉 loading 的样式，仅支持 dark/light
+			}
+		},
+		{
+			"path": "pages/signIn/registeredIdentity/registeredIdentity",
+			"style": {
+				"navigationBarTitleText": "选择身份",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+
+
+
+		{
+			"path": "pages/index/index"
+		},
+		{
+			"path": "pages/arrival/arrival",
+			"style": {
+				"navigationBarTitleText": "到货查询",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/myCollection/myCollection",
+			"style": {
+				"navigationBarTitleText": "我的收藏",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/myReleases/myReleases",
+			"style": {
+				"navigationBarTitleText": "我的发布",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/withdrawalAmount/withdrawalAmount",
+			"style": {
+				"navigationBarTitleText": "提现金额",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/receivingAddress/receivingAddress",
+			"style": {
+				"navigationBarTitleText": "编辑收货地址",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/ personalCenter/ personalCenter",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationBarBackgroundColor": "#fff"
+
+			}
+		},
+		{
+			"path": "pages/myOrder/myOrder",
+			"style": {
+				"navigationBarTitleText": "我的订单",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/ personalCenter/ changeInformation/ changeInformation",
+			"style": {
+				"navigationBarTitleText": "更改信息",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/businessPurchase/businessPurchase",
+			"style": {
+				"navigationBarTitleText": "基本信息",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/notice/notice",
+			"style": {
+				"navigationBarTitleText": "通知",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/signIn/identitySelection/identitySelection",
+			"style": {
+				"navigationBarTitleText": "通知",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/signIn/registration/registration",
+			"style": {
+				"navigationBarTitleText": "通知",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/confirmOrder/confirmOrder",
+			"style": {
+				"navigationBarTitleText": "确认订单",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}
+
+		, {
+			"path": "pages/itemNoQuery/itemNoQuery",
+			"style": {
+				"navigationBarTitleText": "货号查询",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/priceReductionQuery/priceReductionQuery",
+			"style": {
+				"navigationBarTitleText": "降价查询",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/retailStore/retailStore",
+			"style": {
+				"navigationBarTitleText": "门店查询",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/retailStore/retailInfo/retailInfo",
+			"style": {
+				"navigationBarTitleText": "店铺名称",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/existingAddress/existingAddress",
+			"style": {
+				"navigationBarTitleText": "收货地址",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/arrivalQuery/arrivalQuery",
+			"style": {
+				"navigationBarTitleText": "到货查询",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		}, {
+			"path": "pages/demandForGoods/demandForGoods",
+			"style": {
+				"navigationBarTitleText": "求货",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/demandForGoods/info/info",
+			"style": {
+				"navigationBarTitleText": "求货",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/release/release",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"navigationBarBackgroundColor": "#F0F2F5"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#333",
+		"selectedColor": "#333",
+		"list": [{
+				"pagePath": "pages/homePage/homePage",
+				"text": "首页",
+				"iconPath": "static/img/homePage1.png",
+				"selectedIconPath": "static/img/homePage.png"
+			},
+			{
+				"pagePath": "pages/arrival/arrival",
+				"text": "任务大厅",
+				"iconPath": "static/img/task1.png",
+				"selectedIconPath": "static/img/task.png"
+			},
+			{
+				"pagePath": "pages/ personalCenter/ personalCenter",
+				"text": "个人中心",
+				"iconPath": "static/img/Personal1.png",
+				"selectedIconPath": "static/img/Personal.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "火速运动",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
