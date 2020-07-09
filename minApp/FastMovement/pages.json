@@ -75,7 +75,7 @@
 			}
 		},
 		{
-			"path": "pages/ personalCenter/ personalCenter",
+			"path": "pages/personalCenter/personalCenter",
 			"style": {
 				"navigationBarTitleText": "个人中心",
 				"navigationBarBackgroundColor": "#fff"
@@ -90,7 +90,7 @@
 			}
 		},
 		{
-			"path": "pages/ personalCenter/ changeInformation/ changeInformation",
+			"path": "pages/personalCenter/changeInformation/changeInformation",
 			"style": {
 				"navigationBarTitleText": "更改信息",
 				"navigationBarBackgroundColor": "#fff"
@@ -204,7 +204,7 @@
 				"selectedIconPath": "static/img/task.png"
 			},
 			{
-				"pagePath": "pages/ personalCenter/ personalCenter",
+				"pagePath": "pages/personalCenter/personalCenter",
 				"text": "个人中心",
 				"iconPath": "static/img/Personal1.png",
 				"selectedIconPath": "static/img/Personal.png"
