@@ -42,7 +42,7 @@
 		{
 			"path": "pages/arrival/arrival",
 			"style": {
-				"navigationBarTitleText": "到货查询",
+				"navigationBarTitleText": "任务大厅",
 				"navigationBarBackgroundColor": "#fff"
 			}
 		},
@@ -110,19 +110,6 @@
 				"navigationBarBackgroundColor": "#fff"
 			}
 		}, {
-			"path": "pages/signIn/identitySelection/identitySelection",
-			"style": {
-				"navigationBarTitleText": "通知",
-				"navigationBarBackgroundColor": "#fff"
-			}
-		}, {
-			"path": "pages/signIn/registration/registration",
-			"style": {
-				"navigationBarTitleText": "通知",
-				"navigationBarBackgroundColor": "#fff"
-			}
-		},
-		{
 			"path": "pages/confirmOrder/confirmOrder",
 			"style": {
 				"navigationBarTitleText": "确认订单",

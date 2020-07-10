@@ -4,39 +4,9 @@
 			<input type="text" value="" placeholder="请输入货名或货号" />
 			<image src="../../static/img/search.png" mode=""></image>
 		</view>
-		<navigator url="./info/info">
-			<view class="productShoes">
-				<view class="productShoesImg">
-					<image src="http://seopic.699pic.com/photo/50070/6451.jpg_wh1200.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="productShoesTitle">
-					<view class="productShoesText">
-						VANS SKB_HIMTE 高帮鞋 VN0A33TXQWT
-					</view>
-					<view class="productShoesMsg">
-						5555099-700
-					</view>
-				</view>
-			</view>
-		</navigator>
-		<view class="bottomBorder"></view>
+
 		
-		<view class="productShoes">
-			<view class="productShoesImg">
-				<image src="http://seopic.699pic.com/photo/50070/6451.jpg_wh1200.jpg" mode="aspectFill"></image>
-			</view>
-			<view class="productShoesTitle">
-				<view class="productShoesText">
-					VANS SKB_HIMTE 高帮鞋 VN0A33TXQWT
-				</view>
-				<view class="productShoesMsg">
-					5555099-700
-				</view>
-			</view>
-		</view>
-		<view class="bottomBorder"></view>
-		
-		<view class="productShoes">
+		<view class="productShoes" @click="toTarget">
 			<view class="productShoesImg">
 				<image src="http://seopic.699pic.com/photo/50070/6451.jpg_wh1200.jpg" mode="aspectFill"></image>
 			</view>
@@ -52,29 +22,25 @@
 		<view class="bottomBorder"></view>
 		
 		
-		<view class="productShoes">
-			<view class="productShoesImg">
-				<image src="http://seopic.699pic.com/photo/50070/6451.jpg_wh1200.jpg" mode="aspectFill"></image>
-			</view>
-			<view class="productShoesTitle">
-				<view class="productShoesText">
-					VANS SKB_HIMTE 高帮鞋 VN0A33TXQWT
-				</view>
-				<view class="productShoesMsg">
-					5555099-700
-				</view>
-			</view>
-		</view>
-		<view class="bottomBorder"></view>
+		
 	</view>
 </template>
 
 <script>
+	import { ShopAddress } from '@/api/api.js';
+	import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
+	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
+	
 	export default {
 		data() {
 			return {
 				
 			};
+		},
+		methods:{
+			toTarget(){
+				navigateTo('/pages/demandForGoods/info/info')
+			}
 		}
 	}
 </script>
@@ -104,7 +70,7 @@
 }
 .productShoes{
 	display: flex;
-	width: 95%;
+	width: 90%;
 	margin: 30rpx auto;
 	.productShoesImg{
 		width:160rpx;
@@ -112,6 +78,7 @@
 		image{
 			width: 100%;
 			height: 100%;
+			border-radius: 12rpx;
 		}
 	}
 	.productShoesTitle{
@@ -121,6 +88,7 @@
 			font-size: 27rpx;
 			width: 100%;
 			height: 120rpx;
+			word-break: break-all;
 		}
 		.productShoesMsg{
 		  font-size: 25rpx;

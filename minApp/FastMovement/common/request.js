@@ -15,9 +15,8 @@ const weRequest = (url, params = {}) => {
     data: params.data || {},
     responseType: params.responseType || 'text',
     header:{
-      // 'token': uni.getStorageSync('sessionToken')||'',
-    //   'X-Parse-Application-Id': 'K2Dw31SA6bpDIDWEQQe409F8Bkp1PuPYnFqDiHDL',
-    //   'X-Parse-REST-API-Key': '',
+      'token': uni.getStorageSync('sessionToken')||'',
+			...params.header
     }
   }
 

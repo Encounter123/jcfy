@@ -4,19 +4,18 @@
 		<view></view>
 		<view class="loginBg1">
 			<view class="loginBtn">
-				<view><button class="loginWeChatBtn" open-type="getUserInfo" @getuserinfo="wechatLogin">微信一键登录</button></view>
-				<navigator url="login/login">
-					<view class="loginPhoneBtn"><text>手机号登录/注册</text></view>
-				</navigator>
+				<view><button class="loginWeChatBtn" lang="zh_CN" open-type="getUserInfo" @getuserinfo="wechatLogin">微信一键登录</button></view>
+				<!-- <navigator url="login/login"> -->
+					<view class="loginPhoneBtn" @click="toPhoneLogin"><text>手机号登录/注册</text></view>
+				<!-- </navigator> -->
 			</view>
 		</view>
 
-		<common-footer></common-footer>
 	</view>
 </template>
 
 <script>
-import { LoginByWx, ShopBannerList } from '@/api/api.js';
+import { UpdateByWx, ShopBannerList } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 
@@ -28,72 +27,50 @@ export default {
 		};
 	},
 	methods: {
-		init() {
-			this.backgroundMap();
-		},
-		wechatLogin() {
-			var that = this;
-			// 获取用户名  获取性别 获取头像 获取js_code去换取后台返回的openID
-			uni.login({
-				provider: 'weixin',
-				success: function(loginRes) {
-					let js_code = loginRes.code; //js_code可以给后台获取unionID或openID作为用户标识
-					// 获取用户信息
-					uni.getUserInfo({
-						provider: 'weixin',
-						success: function(infoRes) {
-							//infoRes里面有用户信息需要的话可以取一下
-							let username = infoRes.userInfo.nickName; //用户名
-							let gender = infoRes.userInfo.gender; //用户性别
-							let avatarUrl = infoRes.userInfo.avatarUrl; //头像
-							let formdata = { code: js_code, username: username, sex: gender, avatarUrl: avatarUrl };
-							// #ifdef MP-WEIXIN
-							uni.getSetting({
-								success(res) {
-									console.log('授权：', res);
-									if (!res.authSetting['scope.userInfo']) {
-										//这里调用授权
-										console.log('当前未授权');
-									} else {
-										//用户已经授权过了
-										console.log('当前已授权');
-										// 弹出正在登录的弹框
-										showLoading({ title: '正在登录···', icon: 'none' });
-										// 判断已授权调取接口并获取openId
-										LoginByWx({
-											data: {
-												code: js_code
-											}
-										}).then(res => {
-											if (res.code == 202) {
-												// 登录成功后判断是否是第一次注册  如果是弹出选择身份页面
-												navigateTo('/pages/signIn/registeredIdentity/registeredIdentity?openId=' + res.data.rows[0].openId);
-											} else if (res.code == 201) {
-												switchTab('/pages/homePage/homePage');
-											}
-										});
-									}
-								}
-							});
-						}
-					});
-				}
-			});
+		wechatLogin(e) {
+			console.log(e)
+			let status1 = e.detail.errMsg.indexOf('deny')
+			let status2 = e.detail.errMsg.indexOf('fail')
+			if (status1 == -1 && status2 == -1) {
+				console.log(11)
+				showLoading({title:'加载中...'})
+				UpdateByWx({
+					data:{
+						...e.detail.userInfo
+					}
+				}).then(res=>{
+					if(res.code == 200){
+						navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
+					}else{
+						showToast({title: res.msg, icon: 'none'})
+					}
+				})
+				
+			}else{
+				hideLoading()
+				showToast({title:'登录失败！',icon:'none'})
+			}
 
-			//#endif
+		},
+		toPhoneLogin(){
+			navigateTo('/pages/signIn/login/login')
 		},
 		// 获取背景图
 		backgroundMap() {
 			ShopBannerList({
 				method: 'get'
 			}).then(res => {
+				hideLoading()
 				console.log(res);
 				this.imageURL = res.rows[2].bannerImg;
-			});
+			}).catch(()=>{
+				hideLoading()
+			})
 		}
 	},
 	onLoad() {
-		this.init();
+		showLoading({title:'加载中...'})
+		this.backgroundMap();
 	}
 };
 </script>

@@ -1,168 +1,65 @@
 <template>
 	<view>
 		<view class="arrivalBg">
-			<spring-box></spring-box>
-			<view class="smallBg">
-				<view><image mode="aspectFill" src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image></view>
+			<spring-box :ShowHidden="ShowHidden" @search="search"></spring-box>
+			
+			<block v-if="pageType!=2">
+				<view class="smallBg" v-for="(item,index) in productList" :key="index">
+					<common-cell :item="item" @collection="collection(index)"></common-cell>
+				</view>
+			</block>
+			<block v-else>
+				<view class="allStores">所有门店</view>
 				<view>
-					<view class="spacing">
-						<text>
-							<text class="title">货号：</text>
-							689174-098
-						</text>
-						<text style="margin-left: 25rpx;">
-							<text class="title">库存：</text>
-							666
-						</text>
-					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">折扣价格：</text>
-							￥1266
-						</text>
-						<text style="margin-left: 27rpx;">
-							<text class="title">品牌价格：</text>
-							￥1524
-						</text>
-					</view>
-					<view class="spacing">
-						<image mode="aspectFill" src="../../static/img/love.png"></image>
-						<navigator url="../confirmOrder/confirmOrder"><button class="orderReceivingBtn">一键求购</button></navigator>
+					<view class="storeBox">
+						<text class="store" @click="toTarget()">北京朝阳</text>
+						<text class="store">北京朝阳</text>
+						<text class="store">北京朝阳</text>
 					</view>
 				</view>
-			</view>
-			<view class="smallBg">
-				<view><image mode="aspectFill" src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image></view>
-				<view>
-					<view class="spacing">
-						<text>
-							<text class="title">货号：</text>
-							689174-098
-						</text>
-						<text style="margin-left: 25rpx;">
-							<text class="title">库存：</text>
-							666
-						</text>
-					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">折扣价格：</text>
-							￥1266
-						</text>
-						<text style="margin-left: 27rpx;">
-							<text class="title">品牌价格：</text>
-							￥1524
-						</text>
-					</view>
-					<view class="spacing">
-						<image mode="aspectFill" src="../../static/img/love.png"></image>
-						<button class="orderReceivingBtn">一键求购</button>
-					</view>
-				</view>
-			</view>
-			<view class="smallBg">
-				<view><image mode="aspectFill" src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image></view>
-				<view>
-					<view class="spacing">
-						<text>
-							<text class="title">货号：</text>
-							689174-098
-						</text>
-						<text style="margin-left: 25rpx;">
-							<text class="title">库存：</text>
-							666
-						</text>
-					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">折扣价格：</text>
-							￥1266
-						</text>
-						<text style="margin-left: 27rpx;">
-							<text class="title">品牌价格：</text>
-							￥1524
-						</text>
-					</view>
-					<view class="spacing">
-						<image mode="aspectFill" src="../../static/img/love.png"></image>
-						<button class="orderReceivingBtn">一键求购</button>
-					</view>
-				</view>
-			</view>
-			<view class="smallBg">
-				<view><image mode="aspectFill" src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image></view>
-				<view>
-					<view class="spacing">
-						<text>
-							<text class="title">货号：</text>
-							689174-098
-						</text>
-						<text style="margin-left: 25rpx;">
-							<text class="title">库存：</text>
-							666
-						</text>
-					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">折扣价格：</text>
-							￥1266
-						</text>
-						<text style="margin-left: 27rpx;">
-							<text class="title">品牌价格：</text>
-							￥1524
-						</text>
-					</view>
-					<view class="spacing">
-						<image mode="aspectFill" src="../../static/img/love.png"></image>
-						<button class="orderReceivingBtn">一键求购</button>
-					</view>
-				</view>
-			</view>
-			<view class="smallBg">
-				<view><image mode="aspectFill" src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image></view>
-				<view>
-					<view class="spacing">
-						<text>
-							<text class="title">货号：</text>
-							689174-098
-						</text>
-						<text style="margin-left: 25rpx;">
-							<text class="title">库存：</text>
-							666
-						</text>
-					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">折扣价格：</text>
-							￥1266
-						</text>
-						<text style="margin-left: 27rpx;">
-							<text class="title">品牌价格：</text>
-							￥1524
-						</text>
-					</view>
-					<view class="spacing">
-						<image mode="aspectFill" src="../../static/img/love.png"></image>
-						<button class="orderReceivingBtn">一键求购</button>
-					</view>
-				</view>
-			</view>
+			</block>
 		</view>
 	</view>
 </template>
 
 <script>
+import { ShopAddress } from '@/api/api.js';
+import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
+import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import SpringBox from '@/components/springBox/springBox.vue';
+import CommonCell from '@/components/commonCell/commonCell.vue'
 
 export default {
 	data() {
-		return {};
+		return {
+			productList: [],
+			ShowHidden: false,
+			pageType: 0
+		};
 	},
 	components: {
-		SpringBox
+		SpringBox,
+		CommonCell
 	},
-	methods: {},
-	mounted() {}
+	methods: {
+		toTarget(){
+			navigateTo('/pages/retailStore/retailInfo/retailInfo')
+		},
+		search(e){
+			this.pageType = e.type
+			let value = e.value
+			
+			console.log(e)
+			console.log(e)
+			console.log(e)
+		}
+	},
+	mounted() {
+		
+	},
+	onPageScroll() {
+		this.ShowHidden = false
+	}
 };
 </script>
 
@@ -207,6 +104,28 @@ export default {
 				margin-top: 20rpx;
 			}
 		}
+	}
+}
+
+// 所有门店
+.allStores {
+	width: 100%;
+	height: 70rpx;
+	line-height: 70rpx;
+	margin: 20rpx 15rpx;
+	font-size: 30rpx;
+}
+.storeBox {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	.store {
+		background-color: #f3f4f8;
+		padding: 10rpx 25rpx;
+		border-radius: 30rpx;
+		font-size: 25rpx;
+		margin: 15rpx 20rpx;
 	}
 }
 </style>

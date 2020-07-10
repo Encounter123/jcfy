@@ -1,10 +1,8 @@
 <template>
 	<view>
 		<view class="myOrderList">
-			<text class="myOrderLb1">已接单</text>
-			<text class="myOrderLb1">发货中</text>
-			<text class="myOrderLb1">已完成</text>
-			<text class="myOrderLb1">已退</text>
+			<text @click="selectTab(index)" class="myOrderLb1" :class="selectIndex==index?'active':''" v-for="(item,index) in tarTab" :key="index">{{item}}</text>
+			<view class="line" :style="{left: selectLeft + '%'}"></view>
 		</view>
 		<view class="myOrderBg">
 			<view class="orderReceiving">
@@ -33,7 +31,7 @@
 			<view class="myOrderBottonBorder"></view>
 			<view class="myOrderBtn">
 				<view class="orderReceivingBtn">退订单</view>
-			    <view class="orderReceivingBtn">付款</view>
+			    <view class="orderReceivingBtn" @click="toPay">付款</view>
 			</view>
 		</view>
 		<view class="myOrderBg">
@@ -101,11 +99,33 @@
 </template>
 
 <script>
+	import {  } from '@/api/api.js';
+	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
+	import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
+	
 	export default {
 		data() {
 			return {
+				tarTab:[],
+				selectIndex: 0,
+				selectLeft: 9,
 				
 			};
+		},
+		methods:{
+			selectTab(i){
+				this.selectLeft = i*25 + 9
+				this.selectIndex = i
+			},
+			toPay(){
+				navigateTo('/pages/confirmOrder/confirmOrder')
+			}
+		},
+		onLoad() {
+			
+			let sellerTab = ['已接单','已发货','已完成','已退单']
+			let buyerTab = ['已接单','待收货','已完成','已退单']
+			this.tarTab = this.UserIdentity=='Buyer'? buyerTab: sellerTab
 		}
 	}
 </script>
@@ -113,6 +133,8 @@
 <style lang="less">
 .myOrderList{
 	width: 100%;
+	height: 50rpx;
+	position: relative;
 	.myOrderLb1{
 		width: 25%;
 		height: 50rpx;
@@ -120,7 +142,18 @@
 		font-size: 30rpx;
 		text-align: center;
 	}
-	
+	.active{
+		color: #1AC681;
+	}
+	.line{
+		height: 6rpx;
+		width: 50rpx;
+		background-color: #1AC681;
+		position: absolute;
+		left: 9%;
+		bottom: 0;
+		transition: left 0.5s; 
+	}
 }
 .myOrderBg{
 	width: 91%;

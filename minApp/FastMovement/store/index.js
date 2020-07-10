@@ -6,6 +6,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({ //全局变量定义
 	state: {
 		isIphoneX: false,
+		userIdentity: 'buyer',
+		
 		forcedLogin: false, //是否需要强制登录
 		hasLogin: false,
 		userName: "",
@@ -17,6 +19,11 @@ const store = new Vuex.Store({ //全局变量定义
 		setIphoneX(state, parmas) {
 			state.isIphoneX = parmas
 		},
+		setUserIdentity(state, parmas) {
+			state.userIdentity = parmas
+		},
+		
+		
 		login(state, user) {
 			state.userName = user.username || '';
 			state.hasLogin = true;

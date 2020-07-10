@@ -5,6 +5,9 @@
 		computed:{
 			FixedBottomHeight(){
 				return this.$store.state.isIphoneX? 20:0
+			},
+			UserIdentity(){
+				return this.$store.state.userIdentity
 			}
 		}
 	})

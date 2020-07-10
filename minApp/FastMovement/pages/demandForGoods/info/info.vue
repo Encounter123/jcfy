@@ -26,13 +26,15 @@
 			<text>43</text>
 			<text>44</text>
 		</view>
-		<view class="submit" @click="submitFrom">
-		   提交
-		</view>
+		<view class="submit" @click="submitForm" :style="{ bottom: FixedBottomHeight + 'px' }">提交</view>
 	</view>
 </template>
 
 <script>
+	import {  } from '@/api/api.js';
+	import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
+	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
+	
 	export default {
 		data() {
 			return {
@@ -40,13 +42,8 @@
 			};
 		},
 		methods:{
-			submitFrom(){
-				 uni.navigateTo({
-					url: '../../businessPurchase/businessPurchase',
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
+			submitForm(){
+				navigateTo('/pages/businessPurchase/businessPurchase')
 			}
 		}
 	}
@@ -117,15 +114,27 @@
 		}
 	}
 	.submit{
+		background-color: #000;
+		font-size: 30rpx;
+		text-align: center;
 		width: 100%;
 		height: 100rpx;
 		line-height: 100rpx;
-		font-size: 32rpx;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		color: #fff;
-		background-color: #000;
-		text-align: center;
-		margin-top: 108rpx;
-		border-radius: 10rpx 10rpx 0 0;
+		
+		// width: 100%;
+		// height: 100rpx;
+		// line-height: 100rpx;
+		// font-size: 32rpx;
+		// color: #fff;
+		// background-color: #000;
+		// text-align: center;
+		// margin-top: 108rpx;
+		// border-radius: 10rpx 10rpx 0 0;
 	}
 	
 </style>

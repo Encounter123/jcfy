@@ -1,170 +1,182 @@
 <template>
 	<view>
 		<!-- 地址的Box -->
-		<view class="addressBox">
-			<view class="addressBoxWidth">
-				<view class="addressLbb1">
-					<text>刘媛媛</text>
-					<text>18897543719</text>
-				</view>
-				<view class="addressLbb2">
-					四川省成都市成华区建设路花园小区19栋1单元3008
-				</view>
-				<view class="addressLbb3">
-					<view class="default">
-						<radio class="radio" value=""></radio>
-						<text>设置为默认</text>
+		<block v-if="addressList.length>0">
+			<view class="addressBox" v-for="(item,index) in addressList" :key="index">
+				<view class="addressBoxWidth">
+					<view @click="chooseAddress(item,index)">
+						<view class="addressLbb1">
+							<text>{{item.userName}}</text>
+							<text>{{item.userPhone}}</text>
+						</view>
+						<view class="addressLbb2">{{item.province+item.city+item.area+item.detailed}}</view>
 					</view>
-					<view class="delete">
-						<text class="deleteBtn" >删除</text>
-						<text class="editBtn" @tap="edit">编辑</text>
+					<view class="addressLbb3">
+						<view class="default">
+							<switch :disabled="item.isDefaul" :checked="item.isDefault" class="radio" type="checkbox" @change="selectDefault(item.addressId,index)"></switch>
+							<text>设置为默认</text>
+						</view>
+						<view class="delete">
+							<text class="deleteBtn" @tap="deleteBtn(item.addressId,index)">删除</text>
+							<text class="editBtn" @tap="edit(item)">编辑</text>
+						</view>
 					</view>
-					
 				</view>
 			</view>
-		
-			
-		</view>
-		<view class="addressBox">
-			<view class="addressBoxWidth">
-				<view class="addressLbb1">
-					<text>刘媛媛</text>
-					<text>18897543719</text>
-				</view>
-				<view class="addressLbb2">
-					四川省成都市成华区建设路花园小区19栋1单元3008
-				</view>
-				<view class="addressLbb3">
-					<view class="default">
-						<radio class="radio" value=""></radio>
-						<text>设置为默认</text>
-					</view>
-					<view class="delete">
-						<text class="deleteBtn">删除</text>
-						<text class="editBtn" @tap="edit">编辑</text>
-					</view>
-					
-				</view>
-			</view>
-		
-			
-		</view>
-		<view class="addressBox">
-			<view class="addressBoxWidth">
-				<view class="addressLbb1">
-					<text>刘媛媛</text>
-					<text>18897543719</text>
-				</view>
-				<view class="addressLbb2">
-					四川省成都市成华区建设路花园小区19栋1单元3008
-				</view>
-				<view class="addressLbb3">
-					<view class="default">
-						<radio class="radio" value=""></radio>
-						<text>设置为默认</text>
-					</view>
-					<view class="delete">
-						<text class="deleteBtn">删除</text>
-						<text class="editBtn" @tap="edit">编辑</text>
-					</view>
-					
-				</view>
-			</view>
-		
-			
-		</view>
+		</block>
+		<block v-else>
+			<no-data></no-data>
+		</block>
+
 		<!-- 添加新地址的btn -->
-		<navigator url="../receivingAddress/receivingAddress">
-			<view class="addBtn">
-			   添加新地址
-		    </view>
-		</navigator>
+		<view class="addBtn" @click="edit()">添加新地址</view>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				
-			};
+import { ShopAddress, ShopAddressDel, AddressList } from '@/api/api.js';
+import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js'
+import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
+import NoData from '@/components/noData/noData.vue'
+
+export default {
+	data() {
+		return {
+			addressList:[],
+			choose: false,
+		};
+	},
+	components:{
+		NoData
+	},
+	methods: {
+		edit(item) {
+			navigateTo('/pages/receivingAddress/receivingAddress',{item: JSON.stringify(item)})
 		},
-		methods:{
-			edit(){
-				 uni.navigateTo({
-					url: '../receivingAddress/receivingAddress',
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
+		chooseAddress(item,index){
+			if(this.choose){
+				uni.setStorageSync('address',JSON.stringify(item))
+				navigateBack()
 			}
+		},
+		selectDefault(id,index){
+			for (var i = 0; i < this.addressList.length; i++) {
+				this.addressList[i].isDefault = 0
+			}
+			ShopAddress({
+				method: 'put',
+				data: {
+					addressId: id,
+					isDefault: 1
+				}
+			}).then(res=>{
+				this.addressList[index].isDefault = 1
+			})
+		},
+		deleteBtn(id,i){
+			showModal({
+				title: '确定删除地址吗？'
+			}).then(res=>{
+				ShopAddressDel({
+					method: 'get',
+					data:{
+						addressIds: id
+					}
+				}).then(res=>{
+					this.addressList.splice(i,1)
+				})
+				
+			})
+		},
+		getList(){
+			AddressList({
+				method: 'get'
+			}).then(res=>{
+				hideLoading()
+				if(res.code == 200){
+					this.addressList = res.rows
+				}else{
+					showToast({title: res.msg, icon: 'none'})
+				}
+			})
+		}
+	},
+	onShow() {
+		showLoading({title:'加载中'})
+		this.getList()
+	},
+	onLoad(options) {
+		console.log(options)
+		if(options.choose == 'true'){
+			this.choose = true
 		}
 	}
+};
 </script>
 
 <style lang="less">
-.addressBox{
-	width: 100%;
+.addressBox {
 	background-color: #fff;
-	box-shadow: 0 0 10rpx #eee;
-	margin: 40rpx 0;
-	padding: 30rpx 0;
-	.addressBoxWidth{
+	margin: 40rpx;
+	padding: 20rpx 30rpx;
+	box-sizing: border-box;
+	border: 1rpx solid #eee;
+	border-radius: 12rpx;
+
+	.addressBoxWidth {
 		width: 95%;
 		margin: 0 auto;
-		.addressLbb1{
+		.addressLbb1 {
 			display: flex;
 			font-size: 35rpx;
-			justify-content:space-between;
+			justify-content: space-between;
 			margin: 20rpx 0;
 		}
-		.addressLbb2{
+		.addressLbb2 {
 			font-size: 30rpx;
 			margin: 20rpx 0;
 		}
-		.addressLbb3{
+		.addressLbb3 {
 			display: flex;
 			align-items: center;
-			justify-content:space-between;
+			justify-content: space-between;
 			margin-top: 30rpx;
-			.default{
+			.default {
 				font-size: 25rpx;
-				.radio{
-					transform:scale(0.7);
+				.radio {
+					transform: scale(0.7);
 					vertical-align: middle;
 				}
-				text{
+				text {
 					vertical-align: middle;
 				}
 			}
-			.delete{
+			.delete {
 				font-size: 25rpx;
-				color:gray;
-				.deleteBtn{
+				color: gray;
+				.deleteBtn {
 					border: 1px solid #ccc;
 					display: inline-block;
-					padding:8rpx 25rpx;
+					padding: 8rpx 25rpx;
 				}
-				.editBtn{
+				.editBtn {
 					border: 1px solid #ccc;
 					display: inline-block;
-					padding:8rpx 25rpx;
+					padding: 8rpx 25rpx;
 					margin: 0 20rpx;
 				}
 			}
 		}
 	}
-	
-	}
-	.addBtn{
-		width: 90%;
-		background-color: #000;
-		color: #fff;
-		font-size: 25rpx;
-		text-align: center;
-		height: 80rpx;
-		line-height: 80rpx;
-		margin: 0 auto;
-		
-	}
+}
+.addBtn {
+	width: 90%;
+	background-color: #000;
+	color: #fff;
+	font-size: 25rpx;
+	text-align: center;
+	height: 80rpx;
+	line-height: 80rpx;
+	margin: 0 auto;
+}
 </style>

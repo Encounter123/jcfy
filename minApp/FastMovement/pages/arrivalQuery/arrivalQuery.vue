@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<springBox></springBox>
+		<springBox ></springBox>
 		<!-- 搜索历史记录 删除历史记录 -->
 			<view>
 				<view class="searchHistory">
@@ -13,13 +13,13 @@
 					<text class="history">123456789</text>
 					<text class="history">123456789</text>
 					<text class="history">123456789</text>
-				    <text class="history">123456789</text>
+				  <text class="history">123456789</text>
+					<text class="history">123456789</text>
+					<text class="history">123456789</text>
+					<text class="history">123456789</text>
+					<text class="history">123456789</text>
 				</view>
-			    <!-- 历史记录超过6条显示下拉箭头 -->
-				<view v-if="detailList.length > 6" v-on:click="changeFoldState" class="downArrowBox">
-				         <image src="../../static/img/downArrow.png" mode="aspectFill" class="downArrow"></image>
-						 <!-- <span>{{brandFold?'展开':'收起'}}</span> -->
-			    </view>
+				
 			</view>
 	</view>
 </template>
