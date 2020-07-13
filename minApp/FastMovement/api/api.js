@@ -4,6 +4,7 @@ import weRequest from '../common/request.js'
 
 export const LoginByWx = (params) => weRequest( '/ui/wxutil/loginByWx', params)
 export const UpdateByWx = (params) => weRequest( '/ui/wxutil/updateByWx', params)
+export const Update = (params) => weRequest( '/ui/wxutil/update', params)
 export const UpdataUser = (params) => weRequest( '/ui/system/user/updataUser', params)
 export const ChosePosition = (params) => weRequest( '/ui/wxutil/chose/position', params)
 export const ShopBannerList = (params) => weRequest( '/ui/shop/banner/list', params)
@@ -16,7 +17,10 @@ export const AddressList = (params) => weRequest( '/ui/shop/address/list', param
 export const ShopAddressDel = (params) => weRequest( '/ui/shop/address/del', params)
 export const OrderList = (params) => weRequest( '/ui/order/list', params)
 export const OrderPublish = (params) => weRequest( '/ui/order/publish', params)
-
-
-
-
+export const OrderRelease = (params) => weRequest( '/ui/order/release', params)
+export const TakeOrderList = (params) => weRequest( '/ui/order/take/order/list', params)
+export const OrderRefund = (params) => weRequest( '/ui/order/refund', params)
+export const CollectionList = (params) => weRequest( '/ui/shop/collection/list', params)
+export const CollectionAdd = (params) => weRequest( '/ui/shop/collection/add', params)
+export const CollectionEdit = (params) => weRequest( '/ui/shop/collection/edit', params)
+export const OorderAccept = (params) => weRequest( '/ui/order/accept', params)

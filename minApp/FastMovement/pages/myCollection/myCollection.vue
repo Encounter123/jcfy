@@ -1,191 +1,121 @@
 <template>
 	<view>
 		<view class="myCilleBg">
-		<navigator url="../notice/notice">
-			<view class="myCilleImg">
-				<image src="../../static/img/notice.png" mode=""></image>
-			</view>
-		</navigator>
+			<navigator url="../notice/notice">
+				<view class="myCilleImg"><image src="../../static/img/notice.png" mode=""></image></view>
+			</navigator>
 		</view>
-		 <view class="smallBg">
-		 	<view>
-		 		<image mode="aspectFill"  src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image>
-		 	</view>
-		 	<view>
-		 		<view class="spacing">
-		 			<text><text class="title">货号：</text>689174-098</text>
-		 			<text style="margin-left: 25rpx;"><text class="title">库存：</text>666</text>
-		 		</view>
-		 		<view class="spacing">
-		 			<text><text class="title" >折扣价格：</text>￥1266</text>
-		 			<text  style="margin-left: 27rpx;"><text class="title">品牌价格：</text>￥1524</text>
-		 		</view>
-				<view class="spacing">
-					<text style="color: red;font-size: 20rpx;">比前一天降100元</text>
-				</view>
-		 		<view class="spacing">
-		 			<image  mode="aspectFill" src="../../static/img/love1.png" class="loveImg"></image>
-		 		    <button class="orderReceivingBtn">一键求购</button>
-		 		</view>
-		 	</view>
-		 </view>
-		 <view class="smallBg">
-		 	<view>
-		 		<image mode="aspectFill"  src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image>
-		 	</view>
-		 	<view>
-		 		<view class="spacing">
-		 			<text><text class="title">货号：</text>689174-098</text>
-		 			<text style="margin-left: 25rpx;"><text class="title">库存：</text>666</text>
-		 		</view>
-		 		<view class="spacing">
-		 			<text><text class="title" >折扣价格：</text>￥1266</text>
-		 			<text  style="margin-left: 27rpx;"><text class="title">品牌价格：</text>￥1524</text>
-		 		</view>
-		 				<view class="spacing">
-		 					<text style="color: red;font-size: 20rpx;">比前一天降100元</text>
-		 				</view>
-		 		<view class="spacing">
-		 			<image  mode="aspectFill" src="../../static/img/love1.png" class="loveImg"></image>
-		 		    <button class="orderReceivingBtn">一键求购</button>
-		 		</view>
-		 	</view>
-		 </view>
-		 <view class="smallBg">
-		 	<view>
-		 		<image mode="aspectFill"  src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image>
-		 	</view>
-		 	<view>
-		 		<view class="spacing">
-		 			<text><text class="title">货号：</text>689174-098</text>
-		 			<text style="margin-left: 25rpx;"><text class="title">库存：</text>666</text>
-		 		</view>
-		 		<view class="spacing">
-		 			<text><text class="title" >折扣价格：</text>￥1266</text>
-		 			<text  style="margin-left: 27rpx;"><text class="title">品牌价格：</text>￥1524</text>
-		 		</view>
-		 				<view class="spacing">
-		 					<text style="color: red;font-size: 20rpx;">比前一天降100元</text>
-		 				</view>
-		 		<view class="spacing">
-		 			<image  mode="aspectFill" src="../../static/img/love1.png" class="loveImg"></image>
-		 		    <button class="orderReceivingBtn">一键求购</button>
-		 		</view>
-		 	</view>
-		 </view>
-		 <view class="smallBg">
-		 	<view>
-		 		<image mode="aspectFill"  src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image>
-		 	</view>
-		 	<view>
-		 		<view class="spacing">
-		 			<text><text class="title">货号：</text>689174-098</text>
-		 			<text style="margin-left: 25rpx;"><text class="title">库存：</text>666</text>
-		 		</view>
-		 		<view class="spacing">
-		 			<text><text class="title" >折扣价格：</text>￥1266</text>
-		 			<text  style="margin-left: 27rpx;"><text class="title">品牌价格：</text>￥1524</text>
-		 		</view>
-		 				<view class="spacing">
-		 					<text style="color: red;font-size: 20rpx;">比前一天降100元</text>
-		 				</view>
-		 		<view class="spacing">
-		 			<image  mode="aspectFill" src="../../static/img/love1.png" class="loveImg"></image>
-		 		    <button class="orderReceivingBtn">一键求购</button>
-		 		</view>
-		 	</view>
-		 </view>
-		 <view class="smallBg">
-		 	<view>
-		 		<image mode="aspectFill"  src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg"></image>
-		 	</view>
-		 	<view>
-		 		<view class="spacing">
-		 			<text><text class="title">货号：</text>689174-098</text>
-		 			<text style="margin-left: 25rpx;"><text class="title">库存：</text>666</text>
-		 		</view>
-		 		<view class="spacing">
-		 			<text><text class="title" >折扣价格：</text>￥1266</text>
-		 			<text  style="margin-left: 27rpx;"><text class="title">品牌价格：</text>￥1524</text>
-		 		</view>
-		 				<view class="spacing">
-		 					<text style="color: red;font-size: 20rpx;">比前一天降100元</text>
-		 				</view>
-		 		<view class="spacing">
-		 			<image  mode="aspectFill" src="../../static/img/love1.png" class="loveImg"></image>
-		 		    <button class="orderReceivingBtn">一键求购</button>
-		 		</view>
-		 	</view>
-		 </view>
+		
+		<block v-if="productList.length>0">
+			<view class="smallBg" v-for="(item,index) in productList" :key="index">
+				<common-cell :item="item" @collection="collection(index)"></common-cell>
+			</view>
+		</block>
+		<block v-else>
+			<no-data></no-data>
+		</block>
+		
+		
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				
-			};
+import { CollectionList, CollectionEdit, CollectionAdd } from '@/api/api.js';
+import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
+import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
+import NoData from '@/components/noData/noData.vue';
+import CommonCell from '@/components/commonCell/commonCell.vue'
+
+export default {
+	data() {
+		return {
+			pageSize:10,
+			pageNum:1,
+			productList:[],
+			
+		};
+	},
+	components:{
+		CommonCell,
+		NoData
+	},
+	methods: {
+		collection(e,id){
+			
+			console.log(e)
+			if(this.productList[e].isCollection){
+				CollectionEdit({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						shoseId: id
+					}
+				}).then(res=>{
+					showToast({title: res.msg, icon: 'none'})
+					if(res.code == 200){
+						this.productList[e].isCollection = 0
+					}
+				})
+			}else{
+				CollectionAdd({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						shoseId: id
+					}
+				}).then(res=>{
+					showToast({title: res.msg, icon: 'none'})
+					if(res.code == 200){
+						this.productList[e].isCollection = 1
+					}
+				})
+			}
+		},
+		getData() {
+			CollectionList({
+				method: 'get',
+				data: {
+					pageSize: this.pageSize,
+					pageNum: this.pageNum
+				}
+			}).then(res => {
+				this.productList = this.productList.concat(res.rows);
+			});
 		}
+	},
+	onLoad() {
+		this.getData();
+	},
+	onReachBottom() {
+		this.pageNum++
+		this.getData();
+	},
+	onPullDownRefresh() {
+		this.pageNum = 1
+		this.productList = []
+		this.getData();
 	}
+};
 </script>
 
 <style lang="less">
-.myCilleBg{
+.myCilleBg {
 	width: 100%;
 	height: 100rpx;
 	background-color: #fff;
-	box-shadow: 0 0  10rpx #eee;
+	box-shadow: 0 0 10rpx #eee;
 	display: flex;
-	justify-content:flex-end;
-	align-items:center;
-	image{
+	justify-content: flex-end;
+	align-items: center;
+	image {
 		width: 50rpx;
 		height: 50rpx;
 	}
-	.myCilleImg{
+	.myCilleImg {
 		margin-right: 30rpx;
 	}
 }
-	.smallBg{
-			width: 91%;
-			height:208rpx;
-			background-color: #fff;
-			margin: 30rpx auto;
-			border-radius: 20rpx;
-			padding: 15rpx;
-			display: flex;
-			font-size: 25rpx;
-			color: #999;
-			box-shadow:0 0 10rpx #eee;
-			image{
-				width: 160rpx;
-				height: 160rpx;
-				margin: 20rpx;
-			}
-			.title{
-				color: #555;
-				font-size: 26rpx;
-			}
-			.spacing{
-				line-height: 50rpx;
-				display: flex;
-				.loveImg{
-					width: 40rpx;
-					height: 40rpx;
-					margin-top: -1rpx;
-				}
-				.orderReceivingBtn{
-					width: 150rpx;
-					height: 50rpx;
-					color: #fff;
-					font-size: 20rpx;
-					background-color: #000;
-					line-height: 50rpx;
-					margin-left: 210rpx;
-				}
-			}
-			
-		
-	}
+
 </style>

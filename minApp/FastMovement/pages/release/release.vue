@@ -107,6 +107,12 @@ export default {
 				}
 			}).then(res=>{
 				hideLoading()
+				showToast({title: res.msg, icon: 'none'})
+				if (res.code == 200) {
+					setTimeout(()=>{
+						navigateBack()
+					},2000)
+				}
 			})
 		}
 	},
@@ -119,19 +125,6 @@ export default {
 				_this.client = res.data
 			}
 		})
-		
-		
-		// OssPolicy({
-		// 	method: 'get'
-		// }).then(res=>{
-		// 	this.client = new OSS.Wrapper({
-		// 		region: 'oss-cn-beijing',
-		// 		accessKeyId: 'X8Tartapp0w0VNj6ZrMej4',
-		// 		accessKeySecret: 'VziKartappfO9oXMINPnvzaJNcgcvE0mYWCq',
-		// 		bucket: 'artapp-dev-bucket'
-		// 	});
-
-		// })
 	}
 };
 </script>

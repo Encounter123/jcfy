@@ -4,9 +4,15 @@
 			<spring-box :ShowHidden="ShowHidden" @search="search"></spring-box>
 			
 			<block v-if="pageType!=2">
-				<view class="smallBg" v-for="(item,index) in productList" :key="index">
-					<common-cell :item="item" @collection="collection(index)"></common-cell>
-				</view>
+				<block v-if="productList.length>0">
+					<view class="smallBg" v-for="(item,index) in productList" :key="index">
+						<common-cell :item="item" @collection="collection(index,item.shoseId)"></common-cell>
+					</view>
+				</block>
+				<block v-else>
+					<no-data></no-data>
+				</block>
+
 			</block>
 			<block v-else>
 				<view class="allStores">所有门店</view>
@@ -23,7 +29,7 @@
 </template>
 
 <script>
-import { ShopAddress } from '@/api/api.js';
+import { GoodShoseList, ShopBannerList, OrderList, CollectionEdit, CollectionAdd } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import SpringBox from '@/components/springBox/springBox.vue';
@@ -34,7 +40,11 @@ export default {
 		return {
 			productList: [],
 			ShowHidden: false,
-			pageType: 0
+			pageType: 0,
+			
+			pageSize: 10,
+			pageNum: 1,
+			productList: [],
 		};
 	},
 	components: {
@@ -45,6 +55,59 @@ export default {
 		toTarget(){
 			navigateTo('/pages/retailStore/retailInfo/retailInfo')
 		},
+		init() {
+			this.productList = []
+			this.pageNum = 1
+			this.ProductList(this.pageNum);
+			this.backgroundMap();
+		},
+		// 获取页面列表数据
+		ProductList(number) {
+			GoodShoseList({
+				method: 'get',
+				data: {
+					pageSize: this.pageSize,
+					pageNum: number,
+					// shoseNo: this.seachInput
+				}
+			}).then(res => {
+				this.productList = this.productList.concat(res.rows);
+				
+			});
+		},
+		collection(e,id){
+			
+			console.log(e)
+			if(this.productList[e].isCollection){
+				CollectionEdit({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						shoseId: id
+					}
+				}).then(res=>{
+					showToast({title: res.msg, icon: 'none'})
+					if(res.code == 200){
+						this.productList[e].isCollection = 0
+					}
+				})
+			}else{
+				CollectionAdd({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						shoseId: id
+					}
+				}).then(res=>{
+					showToast({title: res.msg, icon: 'none'})
+					if(res.code == 200){
+						this.productList[e].isCollection = 1
+					}
+				})
+			}
+		},
 		search(e){
 			this.pageType = e.type
 			let value = e.value
@@ -54,8 +117,20 @@ export default {
 			console.log(e)
 		}
 	},
-	mounted() {
+	onShow() {
+		this.init();
+	},
+	onLoad() {
 		
+		
+		
+	},
+	//页面上拉触底事件的处理函数
+	onReachBottom() {
+		this.ProductList(this.pageNum++);
+	},
+	onPullDownRefresh() {
+		this.init();
 	},
 	onPageScroll() {
 		this.ShowHidden = false
@@ -64,48 +139,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.arrivalBg {
-	.smallBg {
-		width: 90%;
-		height: 208rpx;
-		background-color: #fff;
-		margin: 30rpx auto;
-		border-radius: 20rpx;
-		padding: 15rpx;
-		display: flex;
-		font-size: 25rpx;
-		color: #999;
-		box-shadow: 0 0 10rpx #eee;
-		image {
-			width: 160rpx;
-			height: 160rpx;
-			margin: 20rpx;
-		}
-		.title {
-			color: #555;
-			font-size: 26rpx;
-		}
 
-		.spacing {
-			line-height: 55rpx;
-			display: flex;
-			image {
-				width: 40rpx;
-				height: 40rpx;
-			}
-			.orderReceivingBtn {
-				width: 150rpx;
-				height: 50rpx;
-				color: #fff;
-				font-size: 20rpx;
-				background-color: #000;
-				line-height: 50rpx;
-				margin-left: 210rpx;
-				margin-top: 20rpx;
-			}
-		}
-	}
-}
 
 // 所有门店
 .allStores {

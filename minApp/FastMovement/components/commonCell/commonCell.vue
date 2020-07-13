@@ -12,7 +12,8 @@
 					{{ item.shoseStock || item.count }}
 				</text>
 			</view>
-			<block v-if="UserIdentity=='Seller'">
+			
+			<block v-if="type=='home'">
 				<view class="spacing">
 					<text>
 						<text class="title">尺码：</text>
@@ -33,15 +34,16 @@
 						{{ item.createTime | TimestampToTime }}
 					</text>
 				</view>
-				<view class="spacing">
+				<view class="spacing spacingBetween">
 					<text>
 						<text class="title">过期时间:</text>
-						{{item.createTime | TimestampToTimeAfter(item.createTime,item.expireDay)}}
+						{{item.expireTime}}
 					</text>
-					<button class="orderReceivingBtn" @click="getOrder()">接单</button>
+					<button v-if="UserIdentity=='Seller'" class="orderReceivingBtn" @click="getOrder(item.orderId)">接单</button>
 				</view>
 			</block>
-			<block v-if="UserIdentity=='Buyer'">
+			
+			<block v-else>
 				<view class="spacing">
 					<text>
 						<text class="title">吊牌价格：</text>
@@ -52,9 +54,9 @@
 						￥100
 					</text>
 				</view>
-				<view class="spacing">
-					<image @click="collection()" mode="aspectFill" :src="item.status?'../../static/img/love.png':'../../static/img/love1.png'" class="loveImg"></image>
-				  <button class="orderReceivingBtn" @click="purchase()">一键求购</button>
+				<view class="spacing spacingBetween">
+					<image @click="collection()" mode="aspectFill" :src="item.isCollection?'../../static/img/love1.png':'../../static/img/love.png'" class="loveImg"></image>
+				  <button v-if="UserIdentity=='Buyer'" class="orderReceivingBtn" @click="purchase()">一键求购</button>
 				</view>
 			</block>
 			
@@ -64,15 +66,21 @@
 
 <script>
 	import { timestampToTime } from '@/common/date-format.js'
+	import { OorderAccept } from '@/api/api.js';
+	
+	
 	export default {
 		props:{
 			item: {
 				default: {} 
+			},
+			type: {
+				default: 'nohome'
 			}
 		},
 		filters:{
 			TimestampToTime(time){
-				return timestampToTime(time)
+				return time.substr(0,11)
 			},
 			TimestampToTimeAfter(time,day){
 				return timestampToTime( parseInt(time) + (parseInt(day)*24*60*60))
@@ -80,8 +88,18 @@
 		},
 		methods:{
 			//接单
-			getOrder(){
-				showToast({title:'接单成功！', icon: 'none'})
+			getOrder(id){
+				OorderAccept({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						orderId: id
+					}
+				}).then(res=>{
+					showToast({title:'接单成功！', icon: 'none'})
+				})
+				
 			},
 			//收藏
 			collection(){
@@ -122,8 +140,13 @@
 		.spacing {
 			line-height: 50rpx;
 			display: flex;
-			justify-content: space-between;
 			width: 460rpx;
+			text{
+				overflow: hidden;
+				text-overflow:ellipsis;
+				white-space: nowrap;
+				flex: 0 0 50%;
+			}
 			.loveImg{
 				width: 40rpx;
 				height: 40rpx;
@@ -137,6 +160,12 @@
 				background-color: #000;
 				line-height: 50rpx;
 				margin: 0;
+			}
+		}
+		.spacingBetween {
+			justify-content: space-between;
+			text{
+				flex: 0 0 80%;
 			}
 		}
 	}

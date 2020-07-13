@@ -7,7 +7,7 @@
 					<view class="setUp">
 						<image src="../../static/img/setUp.png" mode="aspectFill" class="setUpImg" @tap="setUp"></image>
 						<view class="hearder">
-							<image src="http://image.yy.com/yywebalbumbs2bucket/144152f8680f421599233c6ffcfcef49_1476265267104.jpeg" mode="aspectFill" class="hearderImg"></image>
+							<image :src="userInformation.wxHead" mode="aspectFill" class="hearderImg"></image>
 						</view>
 					</view>
 				</view>
@@ -95,18 +95,9 @@ export default {
 			}).then(res => {
 				this.imageURL = res.data.rows[1].bannerImg;
 			});
-			// this.$apiReq.req({ // 创建对象
-			// 	url: '/ui/shop/banner/list', // 示例请求路径
-			//     method:"get",
-			// 	data : {
-			// 	},
-			// 	success: (res) => {
-			// 		this.imageURL=res.data.rows[1].bannerImg
-			// 	},
-			//  })
 		}
 	},
-	onLoad() {
+	onShow() {
 		this.userInformation = JSON.parse(uni.getStorageSync('userInformation')) || {};
 		console.log(this.userInformation);
 		this.init();

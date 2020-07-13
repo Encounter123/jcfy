@@ -16,7 +16,7 @@
 			
 			<block v-if="productList.length>0">
 				<view class="smallBg" v-for="(item,index) in productList" :key="index">
-					<common-cell :item="item" @collection="collection(index)"></common-cell>
+					<common-cell type="home" :item="item" @collection="collection(index)"></common-cell>
 				</view>
 			</block>
 			<block v-else>
@@ -73,31 +73,16 @@ export default {
 		},
 		// 获取页面列表数据
 		ProductList(number) {
-			if(this.UserIdentity == 'Buyer'){
-				GoodShoseList({
-					method: 'get',
-					data: {
-						pageSize: this.pageSize,
-						pageNum: number,
-						shoseNo: this.seachInput
-					}
-				}).then(res => {
-					this.productList = this.productList.concat(res.rows);
-					
-				});
-			}else{
-				OrderList({
-					method: 'get',
-					data: {
-						pageSize: this.pageSize,
-						pageNum: number,
-						shoseNo: this.seachInput
-					}
-				}).then(res => {
-					this.productList = this.productList.concat(res.rows);
-				});
-			}
-			
+			OrderList({
+				method: 'get',
+				data: {
+					pageSize: this.pageSize,
+					pageNum: number,
+					shoseNo: this.seachInput
+				}
+			}).then(res => {
+				this.productList = this.productList.concat(res.rows);
+			});
 		},
 		// 获取背景图
 		backgroundMap() {
@@ -113,10 +98,13 @@ export default {
 		},
 		
 	},
-	onLoad() {
-		this.$store.commit('setUserIdentity','Buyer')
-		
+	onShow() {
 		this.init();
+	},
+	onLoad() {
+		this.$store.commit('setUserIdentity','Seller')
+		
+	
 	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {
