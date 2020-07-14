@@ -16,7 +16,7 @@
 			
 			<block v-if="productList.length>0">
 				<view class="smallBg" v-for="(item,index) in productList" :key="index">
-					<common-cell type="home" :item="item" @collection="collection(index)"></common-cell>
+					<common-cell type="home" :item="item" @acceptSuccess="acceptSuccess" @collection="collection(index)"></common-cell>
 				</view>
 			</block>
 			<block v-else>
@@ -73,6 +73,7 @@ export default {
 		},
 		// 获取页面列表数据
 		ProductList(number) {
+			showLoading({title: '加载中'})
 			OrderList({
 				method: 'get',
 				data: {
@@ -81,6 +82,8 @@ export default {
 					shoseNo: this.seachInput
 				}
 			}).then(res => {
+				hideLoading()
+				uni.stopPullDownRefresh()
 				this.productList = this.productList.concat(res.rows);
 			});
 		},
@@ -96,15 +99,16 @@ export default {
 			this.productList[e].status = false
 			console.log(e)
 		},
-		
+		acceptSuccess(){
+			this.init();
+		},
 	},
 	onShow() {
 		this.init();
 	},
 	onLoad() {
-		this.$store.commit('setUserIdentity','Seller')
-		
-	
+		// this.$store.commit('setUserIdentity','Buyer')
+
 	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {

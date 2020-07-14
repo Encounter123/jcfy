@@ -106,24 +106,32 @@ export default {
 			history[this.type-1].unshift(item)
 			uni.setStorageSync('history',JSON.stringify(history))
 			this.showHistory = false
+			this.inputValue = item
 			this.$emit('search',{type:this.type,value: item})
 		},
 		submit(e) {
 			this.showHistory = false
 			let value = e.detail.value
-			let history = uni.getStorageSync('history')?JSON.parse(uni.getStorageSync('history')) : [[],[],[],[]]
-			history[this.type-1].unshift(value)
-			if(history[this.type-1].length>6){
-				history[this.type-1].pop()
+			if(value){
+				let history = uni.getStorageSync('history')?JSON.parse(uni.getStorageSync('history')) : [[],[],[],[]]
+				history[this.type-1].unshift(value)
+				if(history[this.type-1].length>6){
+					history[this.type-1].pop()
+				}
+				uni.setStorageSync('history',JSON.stringify(history))
 			}
-			uni.setStorageSync('history',JSON.stringify(history))
-			
 			
 			this.$emit('search',{type:this.type,value: value})
 		}
 	},
+	watch:{
+		ShowHidden(e){
+			console.log(e)
+			this.showHidden = false
+		}
+	},
 	mounted() {
-		this.showHidden = this.ShowHidden;
+		// this.showHidden = this.ShowHidden;
 
 		// document.addEventListener('click', this.HiddenClick)
 	}

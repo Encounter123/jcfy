@@ -13,28 +13,28 @@
 		</view>
 
 		<view class="receivingAddress1">
-			<view class="userName">这里是买手名称</view>
+			<view class="userName">{{information.askingGoodName}}</view>
 			<view class="receivingAddressBox">
-				<view><image src="http://seopic.699pic.com/photo/50052/2341.jpg_wh1200.jpg" mode="aspectFill"></image></view>
-				<view>
-					<text class="shoesTitle">这里是商品名称</text>
-					<text class="shoesPrice">1266元</text>
-					<view class="shoesSize">黑色 42</view>
+				<view style="flex: 0 0 180rpx;"><image style="border-radius: 12rpx;" :src="information.img" mode="aspectFill"></image></view>
+				<view style="position: relative;width: 100%;">
+					<view class="shoesTitle">{{information.askingGoodName}}</view>
+					<text class="shoesPrice">{{information.price}}元</text>
+					<view class="shoesSize">尺码：{{information.size}}</view>
 					<view class="shoesDeliverGoods">发货时间：付款后发货</view>
 				</view>
 			</view>
 			<view>
 				<text class="productTitle">商品货号</text>
-				<text style="color: #999;margin-left: 70rpx;">123456789</text>
+				<text style="color: #999;margin-left: 70rpx;">{{information.goodNo}}</text>
 			</view>
 			<view class="">
 				<text class="productTitle">购买数量</text>
-				<text style="color: #999;margin-left: 70rpx;">5</text>
+				<text style="color: #999;margin-left: 70rpx;">{{information.count}}</text>
 			</view>
 			<view class="total">
 				<!-- <text style="color: #999;letter-spacing: 5rpx;">共1件</text> -->
 				<text style="font-size: 30rpx;margin-left: 15rpx;">合计：</text>
-				<text style="font-size: 28rpx;color: red;">1266元</text>
+				<text style="font-size: 28rpx;color: red;">{{information.price}}元</text>
 			</view>
 		</view>
 		<view class="loginbutton" @click="submitOrder" :style="{ bottom: FixedBottomHeight + 'px' }">确认订单</view>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { AddressList } from '@/api/api.js';
+import { AddressList, OrderPay, Order } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import UniPopup from '@/components/uni-popup/uni-popup.vue';
@@ -68,6 +68,7 @@ export default {
 		return {
 			payWay: 'wxpay',
 			address: {},
+			information:{}
 		};
 	},
 	components: {
@@ -80,7 +81,65 @@ export default {
 		submitOrder() {
 			this.$refs.popup.open();
 		},
-		startPay() {},
+		startPay(id) {
+			if(this.payWay=='wxpay'){
+				let _this = this
+				uni.login({
+					provider: 'weixin',
+					success: (res)=> {
+						OrderPay({
+							header: {
+								'content-type':'application/x-www-form-urlencoded'
+							},
+							data:{
+								addressId: this.address.addressId,
+								code: res.code,
+								order: _this.information.orderId
+							}
+						}).then(res=>{
+							let data = _this.analysis(res.rows[0])
+							uni.requestPayment({
+								provider: 'weixin',
+								...data,
+								package: 'prepay_id='+data.package,
+								success: (e) => {
+									showToast({title: '支付成功！'})
+									this.$refs.popup.close();
+									setTimeout(()=>{
+										navigateBack()
+									},1500)
+								},
+								fail: (e) => {
+									showToast({title: '支付失败！', icon: 'none'})
+								}
+								
+							})
+							
+							console.log(_this.analysis(res.rows[0]))
+						})
+					}
+				})
+			}else{
+				showToast({title: '余额不足', icon: 'none'})
+			}
+			
+		},
+		analysis(data){
+			let splitData = data.replace(/{/,'').replace(/}/,'').split(',')
+			let mapData = splitData.map((val)=>{
+				let splitValue = val.split('=')
+				if(splitValue[0].replace(/\s+/g,'')=='package'){
+					return { [splitValue[0].replace(/\s+/g,'')]: splitValue[2] }
+				}else{
+					return { [splitValue[0].replace(/\s+/g,'')]: splitValue[1] }
+				}
+			})
+			let json = {}
+			for (var i = 0; i < mapData.length; i++) {
+				json = { ...json, ...mapData[i]}
+			}
+			return json
+		},
 		changePayType(e) {
 			this.payWay = e.detail.value;
 			console.log(e);
@@ -109,7 +168,16 @@ export default {
 			this.getDefaultAddress()
 		}
 	},
-	onLoad() {}
+	onLoad(options) {
+		console.log(JSON.parse(options.item))
+		this.information = JSON.parse(options.item)
+		// Order({
+		// 	method: 'get',
+		// 	data:{
+		// 		orderId: this.information.orderId
+		// 	}
+		// })
+	}
 };
 </script>
 
@@ -179,20 +247,20 @@ export default {
 		height: 50rpx;
 		width: 350rpx;
 		overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
 		font-size: 30rpx;
 	}
 	.shoesPrice {
-		margin-left: 180rpx;
-		line-height: 50rpx;
-		height: 50rpx;
-		overflow: hidden;
-		font-size: 30rpx;
+		position: absolute;
+		right: 0;
+		top: 0;
 	}
 	.shoesSize {
-		width: 150rpx;
-		background-color: #eee;
-		border-radius: 15rpx;
-		text-align: center;
+		// width: 150rpx;
+		// background-color: #eee;
+		// border-radius: 15rpx;
+		// text-align: center;
 		font-size: 20rpx;
 		color: #666;
 		margin: 15rpx 0;

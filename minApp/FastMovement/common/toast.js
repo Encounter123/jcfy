@@ -9,16 +9,21 @@ export function showLoading (opt) {
 	// 	image:'../../../static/images/loading.gif'
 	// })
 	
-  return uni.showLoading(opt)
+  return uni.showLoading({
+		mask: true,
+		...opt
+	})
 }
 
 export function hideLoading() {
-	// return uni.hideToast()
   return uni.hideLoading()
 }
 
 export function showToast(opt) {
-  return uni.showToast(opt)
+  return uni.showToast({
+		mask: true,
+		...opt
+	})
 }
 
 export function showModal(opt) {

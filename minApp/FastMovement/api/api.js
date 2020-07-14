@@ -24,3 +24,7 @@ export const CollectionList = (params) => weRequest( '/ui/shop/collection/list',
 export const CollectionAdd = (params) => weRequest( '/ui/shop/collection/add', params)
 export const CollectionEdit = (params) => weRequest( '/ui/shop/collection/edit', params)
 export const OorderAccept = (params) => weRequest( '/ui/order/accept', params)
+export const ShoseSearch = (params) => weRequest( '/ui/good/shose/search', params)
+export const OrderPay = (params) => weRequest( '/ui/order/pay', params)
+export const Order = (params) => weRequest( '/ui/order', params)
+export const OrderDelivery = (params) => weRequest( '/ui/order/delivery', params)

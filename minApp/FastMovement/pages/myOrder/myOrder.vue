@@ -35,18 +35,25 @@
 						</view>
 					</view>
 					<view class="rightBox">
-						<view class="bigText">$1200</view>
-						<view>X10</view>
+						<view class="bigText">{{item.price}}</view>
+						<view>X{{item.count}}</view>
 					</view>
 				</view>
 				<view v-if="selectIndex==0" class="myOrderBottonBorder"></view>
 				<view v-if="selectIndex==0" class="myOrderBtn">
 					<view class="orderReceivingBtn" @click="returnOrder(item.orderId,index)">退订单</view>
 					<block v-if="UserIdentity=='Buyer'">
-						<view class="orderReceivingBtn" @click="toPay">付款</view>
+						<block v-if="item.state==1">
+							<view class="orderReceivingBtn" @click="toPay(item)">付款</view>
+						</block>
+						<block v-else>
+							<view class="orderReceivingBtn">已付款</view>
+						</block>
 					</block>
-					<block>
-						<view class="orderReceivingBtn" @click="toConsignment">去发货</view>
+					<block v-else>
+						<block v-if="item.state==4">
+							<view class="orderReceivingBtn" @click="toConsignment(item.orderId)">去发货</view>
+						</block>
 					</block>
 				</view>
 			</view>
@@ -58,12 +65,12 @@
 		<uni-popup type="center" ref="popup">
 			<view class="popup">
 				<view class="popup-item">
-					<text>物流公司：</text><input type="text"></input>
+					<text>物流公司：</text><input type="text" v-model="delivery.companyName" @input="inputDelivery('companyName',$event)"></input>
 				</view>
 				<view class="popup-item">
-					<text>物流单号：</text><input type="text"></input>
+					<text>物流单号：</text><input type="text" v-model="delivery.orderNo" @input="inputDelivery('orderNo',$event)"></input>
 				</view>
-				<view class="popup-submit">保存</view>
+				<view class="popup-submit" @click="saveLogistics">保存</view>
 			</view>
 		</uni-popup>
 		
@@ -72,7 +79,7 @@
 </template>
 
 <script>
-import { TakeOrderList, OrderRefund } from '@/api/api.js';
+import { TakeOrderList, OrderRefund, OrderDelivery } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 import NoData from '@/components/noData/noData.vue'
@@ -87,7 +94,12 @@ export default {
 			selectLeft: 9,
 			pageSize: 10,
 			pageNumber:1,
-			productList: []
+			productList: [],
+			orderId:'',
+			delivery:{
+				companyName:'',
+				orderNo:''
+			}
 		};
 	},
 	components:{
@@ -99,6 +111,9 @@ export default {
 			uni.setClipboardData({
 				data: text
 			})
+		},
+		inputDelivery(name,e){
+			this.delivery[name] = e.detail.value
 		},
 		selectTab(i){
 			this.pageNumber = 1
@@ -120,7 +135,9 @@ export default {
 				}
 			}).then(res => {
 				hideLoading()
-				this.productList = this.productList.concat(res.rows);
+				if(res.rows.length>0){
+					this.productList = this.productList.concat(res.rows);
+				}
 			});
 		},
 		returnOrder(id,i){
@@ -129,6 +146,9 @@ export default {
 				content: '确认退订单'
 			}).then(res=>{
 				OrderRefund({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
 					data:{
 						order: id
 					}
@@ -139,22 +159,42 @@ export default {
 			})
 			
 		},
-		toPay(){
-			navigateTo('/pages/confirmOrder/confirmOrder')
+		toPay(item){
+			navigateTo('/pages/confirmOrder/confirmOrder',{item: JSON.stringify(item)})
 		},
-		toConsignment(){
+		toConsignment(id){
+			this.orderId = id
+			this.$refs.popup.open()
+		},
+		saveLogistics(id){
 			
+			OrderDelivery({
+				header: {
+					'content-type':'application/x-www-form-urlencoded'
+				},
+				data:{
+					...this.delivery,
+					orderId: this.orderId
+				}
+			}).then(res=>{
+				showToast({title: res.msg, icon: 'none'})
+				if(res.code == 200){
+					this.$refs.popup.close()
+					this.productList = []
+					this.getData();
+				}
+			})
 		}
 	},
-	onLoad() {
+	onShow() {
 
 		let sellerTab = ['已接单','已发货','已完成','已退单']
 		let buyerTab = ['已接单','待收货','已完成','已退单']
 		this.tarTab = this.UserIdentity=='Buyer'? buyerTab: sellerTab
-
+		this.productList = []
 		this.getData();
 		
-		this.$refs.popup.open()
+		
 	},
 	onReachBottom() {
 		this.pageNumber++

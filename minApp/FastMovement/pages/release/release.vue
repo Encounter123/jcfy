@@ -100,23 +100,29 @@ export default {
 		},
 		release() {
 			console.log(this.form);
-			showLoading({title: '加载中'})
-			OrderPublish({
-				data: {
-					...this.form
-				}
-			}).then(res=>{
-				hideLoading()
-				showToast({title: res.msg, icon: 'none'})
-				if (res.code == 200) {
-					setTimeout(()=>{
-						navigateBack()
-					},2000)
-				}
-			})
+			if(this.form.goodNo&&this.form.count&&this.form.size&&this.form.price&&this.form.askingGoodName&&this.form.expireDay&&this.form.img){
+				showLoading({title: '加载中'})
+				OrderPublish({
+					data: {
+						...this.form
+					}
+				}).then(res=>{
+					hideLoading()
+					showToast({title: res.msg, icon: 'none'})
+					if (res.code == 200) {
+						setTimeout(()=>{
+							navigateBack()
+						},2000)
+					}
+				})
+				// showToast({title: 'ok', icon: 'none'})
+			}else{
+				showToast({title: '你有未填写的选项', icon: 'none'})
+			}
+			
 		}
 	},
-	onLoad() {
+	onLoad(options) {
 		let _this = this
 		uni.request({
 			url: baseURL + '/app/aliyun/oss/policy',
@@ -125,6 +131,16 @@ export default {
 				_this.client = res.data
 			}
 		})
+		
+		if(options.item){
+			let form = JSON.parse(options.item)
+			this.form.goodNo = form.shoseNo
+			this.form.count = form.shoseStock
+			this.form.size = form.shoseSize
+			this.form.price = form.shosePrice
+			this.form.img = form.shoseImg
+			this.imageSrc = form.shoseImg
+		}
 	}
 };
 </script>
@@ -167,7 +183,7 @@ body {
 			width: 70%;
 			height: 100rpx;
 			vertical-align: middle;
-			color: #999;
+			color: #333;
 		}
 	}
 	.changeBottomBorder {

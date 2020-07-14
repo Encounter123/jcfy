@@ -1,7 +1,7 @@
 <template>
 	<view class="smallBg">
-		<view><image class="image" mode="aspectFit" :src="item.shoseImg"></image></view>
-		<view style="display: flex;flex-direction: column;align-items: center;height: 200rpx;justify-content: space-between;">
+		<view><image class="image" mode="aspectFit" :src="item.img || item.shoseImg"></image></view>
+		<view style="display: flex;flex-direction: column;align-items: center;justify-content: space-between;">
 			<view class="spacing">
 				<text>
 					<text class="title">货号：</text>
@@ -13,6 +13,9 @@
 				</text>
 			</view>
 			
+			<block v-if="type!='home'">
+				<view class="spacing">{{item.shoseName}}</view>
+			</block>
 			<block v-if="type=='home'">
 				<view class="spacing">
 					<text>
@@ -37,26 +40,27 @@
 				<view class="spacing spacingBetween">
 					<text>
 						<text class="title">过期时间:</text>
-						{{item.expireTime}}
+						{{item.endDate}}
 					</text>
 					<button v-if="UserIdentity=='Seller'" class="orderReceivingBtn" @click="getOrder(item.orderId)">接单</button>
 				</view>
 			</block>
 			
-			<block v-else>
+			<block v-if="type!='home'">
 				<view class="spacing">
 					<text>
 						<text class="title">吊牌价格：</text>
-						￥130
+						￥{{item.issuePrice || 0}}
 					</text>
 					<text>
 						<text class="title">折扣价格：</text>
-						￥100
+						￥{{item.shosePrice || 0}}
 					</text>
 				</view>
+				<view v-if="DownPrice" class="spacing" :style="{color: item.shoseChange>0?'red':'green'}">比前一天{{item.shoseChange>0?'增加了':'降价了'}}{{item.shoseChange | MathAbs}}</view>
 				<view class="spacing spacingBetween">
 					<image @click="collection()" mode="aspectFill" :src="item.isCollection?'../../static/img/love1.png':'../../static/img/love.png'" class="loveImg"></image>
-				  <button v-if="UserIdentity=='Buyer'" class="orderReceivingBtn" @click="purchase()">一键求购</button>
+				  <button v-if="UserIdentity=='Buyer'" class="orderReceivingBtn" @click="purchase(item)">一键求购</button>
 				</view>
 			</block>
 			
@@ -66,8 +70,9 @@
 
 <script>
 	import { timestampToTime } from '@/common/date-format.js'
-	import { OorderAccept } from '@/api/api.js';
-	
+	import { OorderAccept, OrderPublish } from '@/api/api.js';
+	import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
+	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
 	
 	export default {
 		props:{
@@ -76,14 +81,29 @@
 			},
 			type: {
 				default: 'nohome'
+			},
+			DownPrice:{
+				default: false
 			}
 		},
 		filters:{
 			TimestampToTime(time){
-				return time.substr(0,11)
+				if(time){
+					return time.substr(0,11)
+				}else{
+					return  0
+				}
 			},
 			TimestampToTimeAfter(time,day){
 				return timestampToTime( parseInt(time) + (parseInt(day)*24*60*60))
+			},
+			MathAbs(number){
+				if(number){
+					console.log(number)
+					return Math.abs(parseInt(number))
+				}else{
+					return  0
+				}
 			}
 		},
 		methods:{
@@ -97,7 +117,12 @@
 						orderId: id
 					}
 				}).then(res=>{
-					showToast({title:'接单成功！', icon: 'none'})
+					if(res.code == 200){
+						showToast({title:'接单成功！', icon: 'none'})
+						this.$emit('acceptSuccess')
+					}else{
+						showToast({title: res.msg, icon: 'none'})
+					}
 				})
 				
 			},
@@ -109,8 +134,27 @@
 				this.$emit('collection')
 			},
 			//一键求购
-			purchase(){
-			
+			purchase(item){
+				console.log(item);
+				showLoading({title: '加载中'})
+				navigateTo('/pages/release/release',{item: JSON.stringify(item)})
+				
+				
+				// OrderPublish({
+				// 	data: {
+				// 		...this.form
+				// 	}
+				// }).then(res=>{
+				// 	hideLoading()
+				// 	showToast({title: res.msg, icon: 'none'})
+				// 	if (res.code == 200) {
+				// 		setTimeout(()=>{
+				// 			navigateBack()
+				// 		},2000)
+				// 	}
+				// })
+				
+				
 			}
 		}
 	}
@@ -119,7 +163,7 @@
 <style lang="less" scoped>
 	.smallBg {
 		width: 90%;
-		height: 208rpx;
+		// height: 208rpx;
 		background-color: #fff;
 		margin: 30rpx auto;
 		border-radius: 20rpx;
@@ -167,6 +211,12 @@
 			text{
 				flex: 0 0 80%;
 			}
+		}
+		.spacingLong{
+			width: 100%;
+			overflow: hidden;
+			text-overflow:ellipsis;
+			white-space: nowrap;
 		}
 	}
 </style>

@@ -8,7 +8,7 @@
 		
 		<block v-if="productList.length>0">
 			<view class="smallBg" v-for="(item,index) in productList" :key="index">
-				<common-cell :item="item" @collection="collection(index)"></common-cell>
+				<common-cell :item="item" @collection="collection(index,item.shoseId)"></common-cell>
 			</view>
 		</block>
 		<block v-else>

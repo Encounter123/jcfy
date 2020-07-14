@@ -43,7 +43,7 @@
 					<view class="spacing">
 						<text>
 							<text class="title">过期时间:</text>
-							{{item.expireTime | TimestampToTime}}
+							{{item.endDate}}
 						</text>
 					</view>
 				</view>
@@ -80,8 +80,8 @@ export default {
 	},
 	filters: {
 		TimestampToTime(time){
-			return timestampToTime(time)
-		}
+			return time.substr(0,11)
+		},
 	},
 	methods: {
 		selectTab(i) {
@@ -172,6 +172,13 @@ export default {
 	.spacing {
 		line-height: 50rpx;
 		display: flex;
+		width: 460rpx;
+		text{
+			overflow: hidden;
+			text-overflow:ellipsis;
+			white-space: nowrap;
+			flex: 0 0 50%;
+		}
 	}
 }
 </style>

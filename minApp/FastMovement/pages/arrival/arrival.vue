@@ -1,12 +1,12 @@
 <template>
 	<view>
-		<view class="arrivalBg">
+		<view class="arrivalBg" @click="">
 			<spring-box :ShowHidden="ShowHidden" @search="search"></spring-box>
 			
 			<block v-if="pageType!=2">
 				<block v-if="productList.length>0">
 					<view class="smallBg" v-for="(item,index) in productList" :key="index">
-						<common-cell :item="item" @collection="collection(index,item.shoseId)"></common-cell>
+						<common-cell :DownPrice="pageType==4" :item="item" @collection="collection(index,item.shoseId)"></common-cell>
 					</view>
 				</block>
 				<block v-else>
@@ -29,11 +29,12 @@
 </template>
 
 <script>
-import { GoodShoseList, ShopBannerList, OrderList, CollectionEdit, CollectionAdd } from '@/api/api.js';
+import { GoodShoseList, ShopBannerList, OrderList, CollectionEdit, CollectionAdd, ShoseSearch } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import SpringBox from '@/components/springBox/springBox.vue';
 import CommonCell from '@/components/commonCell/commonCell.vue'
+import NoData from '@/components/noData/noData.vue'
 
 export default {
 	data() {
@@ -41,7 +42,7 @@ export default {
 			productList: [],
 			ShowHidden: false,
 			pageType: 0,
-			
+
 			pageSize: 10,
 			pageNum: 1,
 			productList: [],
@@ -49,7 +50,8 @@ export default {
 	},
 	components: {
 		SpringBox,
-		CommonCell
+		CommonCell,
+		NoData
 	},
 	methods: {
 		toTarget(){
@@ -59,10 +61,10 @@ export default {
 			this.productList = []
 			this.pageNum = 1
 			this.ProductList(this.pageNum);
-			this.backgroundMap();
 		},
 		// 获取页面列表数据
 		ProductList(number) {
+			showLoading({title: '加载中'})
 			GoodShoseList({
 				method: 'get',
 				data: {
@@ -71,6 +73,7 @@ export default {
 					// shoseNo: this.seachInput
 				}
 			}).then(res => {
+				hideLoading()
 				this.productList = this.productList.concat(res.rows);
 				
 			});
@@ -109,19 +112,38 @@ export default {
 			}
 		},
 		search(e){
+			showLoading({title: '加载中'})
 			this.pageType = e.type
 			let value = e.value
 			
 			console.log(e)
-			console.log(e)
-			console.log(e)
+			this.productList = []
+			this.pageNum = 1
+			
+			ShoseSearch({
+				method: 'get',
+				data: {
+					key: value,
+					pageNum: this.pageNum,
+					pageSize: this.pageSize,
+					type: this.pageType
+				}
+			}).then(res=>{
+				hideLoading()
+				if(res.code == 200){
+					this.productList = this.productList.concat(res.rows);
+				}
+			})
+			
+			
+			
+			
 		}
 	},
 	onShow() {
 		this.init();
 	},
 	onLoad() {
-		
 		
 		
 	},
@@ -132,7 +154,8 @@ export default {
 	onPullDownRefresh() {
 		this.init();
 	},
-	onPageScroll() {
+	onPageScroll(e) {
+		// console.log(e)
 		this.ShowHidden = false
 	}
 };
