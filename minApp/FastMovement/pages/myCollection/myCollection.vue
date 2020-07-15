@@ -2,7 +2,10 @@
 	<view>
 		<view class="myCilleBg">
 			<navigator url="../notice/notice">
-				<view class="myCilleImg"><image src="../../static/img/notice.png" mode=""></image></view>
+				<view class="myCilleImg">
+					<image src="../../static/img/notice.png" mode=""></image>
+					<view v-if="notes" class="notes"></view>
+				</view>
 			</navigator>
 		</view>
 		
@@ -20,7 +23,7 @@
 </template>
 
 <script>
-import { CollectionList, CollectionEdit, CollectionAdd } from '@/api/api.js';
+import { CollectionList, CollectionEdit, CollectionAdd, CollectionNotes } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 import NoData from '@/components/noData/noData.vue';
@@ -32,7 +35,7 @@ export default {
 			pageSize:10,
 			pageNum:1,
 			productList:[],
-			
+			notes: false
 		};
 	},
 	components:{
@@ -54,7 +57,7 @@ export default {
 				}).then(res=>{
 					showToast({title: res.msg, icon: 'none'})
 					if(res.code == 200){
-						this.productList[e].isCollection = 0
+						this.productList.splice(e,1)
 					}
 				})
 			}else{
@@ -85,8 +88,18 @@ export default {
 			});
 		}
 	},
-	onLoad() {
+	onShow() {
+		this.productList = []
 		this.getData();
+		CollectionNotes({
+			method: 'get',
+			data: {
+				pageNum: 1,
+				pageSize: 10
+			}
+		}).then(res=>{
+			this.notes = res.rows.length>0
+		})
 	},
 	onReachBottom() {
 		this.pageNum++
@@ -115,6 +128,17 @@ export default {
 	}
 	.myCilleImg {
 		margin-right: 30rpx;
+		position: relative;
+		.notes{
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 20rpx;
+			width: 20rpx;
+			border-radius: 50%;
+			background-color: #ff0000;
+			
+		}
 	}
 }
 

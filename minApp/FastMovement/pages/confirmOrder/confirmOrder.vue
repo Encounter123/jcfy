@@ -2,14 +2,18 @@
 	<view>
 		<view class="receivingAddress" @click="toAddress">
 			<view><image src="../../static/img/adress1.png" mode=""></image></view>
-			<view class="addressMsg">
+			<view class="addressMsg" v-if="address.addressId">
 				<view>
 					<text style="font-size: 30rpx">{{address.userName}}</text>
 					<text style="margin-left: 30rpx;">{{address.userPhone}}</text>
 				</view>
 				<view><text>{{address.province+address.city+address.area+address.detailed}}</text></view>
 			</view>
-			<view class="nextPage"><image style="width: 30rpx;height: 30rpx;" src="../../static/img/arrow.png" mode=""></image></view>
+			<view v-else class="addressMsg" style="align-items: center;">
+				<view v-if="UserIdentity=='Buyer'">请选择收货地址</view>
+				<view v-else>等待求购者付款</view>
+			</view>
+			<view class="nextPage"><image v-if="showPay" style="width: 30rpx;height: 30rpx;" src="../../static/img/arrow.png" mode=""></image></view>
 		</view>
 
 		<view class="receivingAddress1">
@@ -37,7 +41,7 @@
 				<text style="font-size: 28rpx;color: red;">{{information.price}}元</text>
 			</view>
 		</view>
-		<view class="loginbutton" @click="submitOrder" :style="{ bottom: FixedBottomHeight + 'px' }">确认订单</view>
+		<view v-if="showPay" class="loginbutton" @click="submitOrder" :style="{ bottom: FixedBottomHeight + 'px' }">确认订单</view>
 
 		<uni-popup type="bottom" ref="popup">
 			<view class="popup">
@@ -47,7 +51,7 @@
 						<radio checked value="wxpay"></radio>
 					</view>
 					<view class="popup-item">
-						<text>余额支付</text>
+						<text>余额支付（剩余￥ {{userPrice}}元）</text>
 						<radio value="pay"></radio>
 					</view>
 				</radio-group>
@@ -58,7 +62,7 @@
 </template>
 
 <script>
-import { AddressList, OrderPay, Order } from '@/api/api.js';
+import { AddressList, OrderPay, Order, OrderGetUser, PayBalance } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import UniPopup from '@/components/uni-popup/uni-popup.vue';
@@ -68,7 +72,9 @@ export default {
 		return {
 			payWay: 'wxpay',
 			address: {},
-			information:{}
+			information:{},
+			showPay: false,
+			userPrice:0
 		};
 	},
 	components: {
@@ -76,14 +82,24 @@ export default {
 	},
 	methods: {
 		toAddress() {
+			if(!this.showPay){
+				return
+			}
 			navigateTo('/pages/existingAddress/existingAddress', { choose: true });
 		},
 		submitOrder() {
-			this.$refs.popup.open();
+			OrderGetUser({
+				method: 'get'
+			}).then(res=>{
+				if(res.code == 200){
+					this.userPrice = res.rows[0]
+					this.$refs.popup.open();
+				}
+			})
 		},
 		startPay(id) {
+			let _this = this
 			if(this.payWay=='wxpay'){
-				let _this = this
 				uni.login({
 					provider: 'weixin',
 					success: (res)=> {
@@ -92,7 +108,7 @@ export default {
 								'content-type':'application/x-www-form-urlencoded'
 							},
 							data:{
-								addressId: this.address.addressId,
+								addressId: _this.address.addressId,
 								code: res.code,
 								order: _this.information.orderId
 							}
@@ -104,7 +120,7 @@ export default {
 								package: 'prepay_id='+data.package,
 								success: (e) => {
 									showToast({title: '支付成功！'})
-									this.$refs.popup.close();
+									_this.$refs.popup.close();
 									setTimeout(()=>{
 										navigateBack()
 									},1500)
@@ -112,7 +128,6 @@ export default {
 								fail: (e) => {
 									showToast({title: '支付失败！', icon: 'none'})
 								}
-								
 							})
 							
 							console.log(_this.analysis(res.rows[0]))
@@ -120,7 +135,38 @@ export default {
 					}
 				})
 			}else{
-				showToast({title: '余额不足', icon: 'none'})
+				showModal({
+					title: '支付提示',
+					content: '确定使用余额进行支付吗？'
+				}).then(()=>{
+					uni.login({
+						provider: 'weixin',
+						success: (res)=> {
+							PayBalance({
+								header: {
+									'content-type':'application/x-www-form-urlencoded'
+								},
+								data:{
+									addressId: _this.address.addressId,
+									code: res.code,
+									order: _this.information.orderId
+								}
+							}).then(res=>{
+								if(res.code == 200){
+									showToast({title: '支付成功！'})
+									_this.$refs.popup.close();
+									setTimeout(()=>{
+										navigateBack()
+									},1500)
+								}else{
+									showToast({title: res.msg, icon: 'none'})
+								}
+							})
+						}
+					})
+				})
+				
+				
 			}
 			
 		},
@@ -142,7 +188,6 @@ export default {
 		},
 		changePayType(e) {
 			this.payWay = e.detail.value;
-			console.log(e);
 		},
 		getDefaultAddress(){
 			AddressList({
@@ -171,6 +216,8 @@ export default {
 	onLoad(options) {
 		console.log(JSON.parse(options.item))
 		this.information = JSON.parse(options.item)
+		this.showPay = options.type == 'pay'
+		
 		// Order({
 		// 	method: 'get',
 		// 	data:{

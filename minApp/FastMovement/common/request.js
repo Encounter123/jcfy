@@ -9,6 +9,7 @@ const weRequest = (url, params = {}) => {
     url = baseURL + url
   }
 
+
   let sendObj = {
     url,
     method: params.method || 'POST',
@@ -39,7 +40,7 @@ const weRequest = (url, params = {}) => {
 		uni.request({...sendObj,
 			success:function (res) {
 				if(res.statusCode!=200){
-					if (res.data.error=='Invalid session token') {
+					if (res.data.msg.indexOf('token')!=-1) {
 						uni.clearStorage()
 						showToast({
 							title: '登录已过期，正在重新加载...',
@@ -61,16 +62,19 @@ const weRequest = (url, params = {}) => {
 						// navigateTo('/pages/start/404')
 					}
 				}else{
-					// if (res.data.code!==200) {
-					// 	showToast({
-					// 		title: res.data.msg||'网络异常!',
-					// 		icon: 'none',
-					// 		duration:5000
-					// 	})
-					// 	reject(res.data)
-					// } else {
+					if (res.data.msg.indexOf('token')!=-1) {
+						uni.clearStorage()
+						showToast({
+							title: '登录已过期，正在重新加载...',
+							icon: 'none',
+							duration:5000
+						})
+						setTimeout(()=>{
+							reLaunch('/pages/start')
+						},2000)
+					} else {
 						resolve(res.data)
-					// }
+					}
 				}			
 			},
 			fail:function (error) {

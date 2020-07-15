@@ -7,7 +7,7 @@
 					<view class="setUp">
 						<image src="../../static/img/setUp.png" mode="aspectFill" class="setUpImg" @tap="setUp"></image>
 						<view class="hearder">
-							<image :src="userInformation.wxHead" mode="aspectFill" class="hearderImg"></image>
+							<image :src="userInformation.head" mode="aspectFill" class="hearderImg"></image>
 						</view>
 					</view>
 				</view>
@@ -17,8 +17,10 @@
 			</view>
 			<navigator url="../myCollection/myCollection">
 				<view class="myPersonalCenter">
-					<image src="../../static/img/Collection.png" mode="aspectFill"></image>
-					<text class="collection">我的收藏</text>
+					<view class="myPersonalCenter-left">
+						<image src="../../static/img/Collection.png" mode="aspectFill"></image>
+						<text class="collection">我的收藏</text>
+					</view>
 					<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 				</view>
 			</navigator>
@@ -26,8 +28,10 @@
 
 			<navigator url="../myOrder/myOrder">
 				<view class="myPersonalCenter">
-					<image src="../../static/img/order.png" mode="aspectFill"></image>
-					<text class="collection">我的订单</text>
+					<view class="myPersonalCenter-left">
+						<image src="../../static/img/order.png" mode="aspectFill"></image>
+						<text class="collection">我的订单</text>
+					</view>
 					<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 				</view>
 			</navigator>
@@ -36,8 +40,10 @@
 			<block v-if="UserIdentity=='Buyer'">
 				<navigator url="../myReleases/myReleases">
 					<view class="myPersonalCenter">
-						<image src="../../static/img/release.png" mode="aspectFill"></image>
-						<text class="collection">我的发布</text>
+						<view class="myPersonalCenter-left">
+							<image src="../../static/img/release.png" mode="aspectFill"></image>
+							<text class="collection">我的发布</text>
+						</view>
 						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 					</view>
 				</navigator>
@@ -47,8 +53,10 @@
 			<block v-if="UserIdentity=='Buyer'">
 				<navigator url="../existingAddress/existingAddress">
 					<view class="myPersonalCenter">
-						<image src="../../static/img/adress.png" mode="aspectFill"></image>
-						<text class="collection">收货地址</text>
+						<view class="myPersonalCenter-left">
+							<image src="../../static/img/adress.png" mode="aspectFill"></image>
+							<text class="collection">收货地址</text>
+						</view>
 						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 					</view>
 				</navigator>
@@ -57,10 +65,14 @@
 
 			<navigator url="../withdrawalAmount/withdrawalAmount">
 				<view class="myPersonalCenter">
-					<image src="../../static/img/money.png" mode="aspectFill"></image>
-					<text class="collection1">可提现现金</text>
-					<text class="collection1Money">￥690</text>
-					<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg1"></image>
+					<view class="myPersonalCenter-left">
+						<image src="../../static/img/money.png" mode="aspectFill"></image>
+						<text class="collection1">可提现现金</text>
+					</view>
+					<view class="myPersonalCenter-left">
+						<text class="collection1Money">￥{{userPrice}}</text>
+						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg1"></image>
+					</view>
 				</view>
 			</navigator>
 			<view class="bottomBorder"></view>
@@ -69,7 +81,7 @@
 </template>
 
 <script>
-import { ShopBannerList } from '@/api/api.js';
+import { OrderGetUser } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js'
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
 
@@ -78,23 +90,22 @@ export default {
 	data() {
 		return {
 			imageURL: 'http://seopic.699pic.com/photo/50142/5691.jpg_wh1200.jpg',
-			userInformation: {}
+			userInformation: {},
+			userPrice:0
 		};
 	},
 	methods: {
 		init() {
-			this.backgroundMap();
+			OrderGetUser({
+				method: 'get'
+			}).then(res=>{
+				if(res.code == 200){
+					this.userPrice = res.rows[0]
+				}
+			})
 		},
 		setUp() {
 			navigateTo('/pages/personalCenter/changeInformation/changeInformation')
-		},
-		// 获取背景图
-		backgroundMap() {
-			ShopBannerList({
-				method: 'get'
-			}).then(res => {
-				this.imageURL = res.data.rows[1].bannerImg;
-			});
 		}
 	},
 	onShow() {
@@ -163,13 +174,20 @@ export default {
 		width: 100%;
 		height: 110rpx;
 		line-height: 110rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 30rpx;
+		box-sizing: border-box;
 		image {
 			width: 50rpx;
 			height: 50rpx;
-			vertical-align: middle;
-			margin-left: 20rpx;
 		}
-
+		&-left{
+			height: 110rpx;
+			align-items: center;
+			display: flex;
+		}
 		.collection {
 			margin-left: 30rpx;
 			font-size: 28rpx;
@@ -183,17 +201,14 @@ export default {
 			font-weight: 500;
 		}
 		.collection1Money {
-			width: 100rpx;
 			font-size: 28rpx;
 			color: #999;
-			margin-left: 30rpx;
+			margin-right: 20rpx;
 			font-weight: 500;
-			margin-left: 350rpx;
 		}
 		.arrowImg {
 			width: 40rpx;
 			height: 40rpx;
-			margin-left: 480rpx;
 		}
 		.arrowImg1 {
 			width: 40rpx;

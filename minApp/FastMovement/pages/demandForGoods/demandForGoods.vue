@@ -6,20 +6,14 @@
 		</view>
 
 		
-		<view class="productShoes" @click="toTarget">
-			<view class="productShoesImg">
-				<image src="http://seopic.699pic.com/photo/50070/6451.jpg_wh1200.jpg" mode="aspectFill"></image>
+		<block v-if="productList.length>0">
+			<view class="smallBg" v-for="(item,index) in productList" :key="index">
+				<common-cell :item="item" @collection="collection(index,item.shoseId)"></common-cell>
 			</view>
-			<view class="productShoesTitle">
-				<view class="productShoesText">
-					VANS SKB_HIMTE 高帮鞋 VN0A33TXQWT
-				</view>
-				<view class="productShoesMsg">
-					5555099-700
-				</view>
-			</view>
-		</view>
-		<view class="bottomBorder"></view>
+		</block>
+		<block v-else>
+			<no-data></no-data>
+		</block>
 		
 		
 		
@@ -27,21 +21,93 @@
 </template>
 
 <script>
-	import { ShopAddress } from '@/api/api.js';
+	import { ShoseSearch, CollectionEdit, CollectionAdd } from '@/api/api.js';
 	import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js';
 	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
+	import CommonCell from '@/components/commonCell/commonCell.vue'
+	import NoData from '@/components/noData/noData.vue'
 	
 	export default {
 		data() {
 			return {
-				
+				productList: [],
+				pageSize: 10,
+				pageNum: 1,
+				value:''
 			};
+		},
+		components:{
+			CommonCell,
+			NoData
 		},
 		methods:{
 			toTarget(){
 				navigateTo('/pages/demandForGoods/info/info')
-			}
-		}
+			},
+			inputValue(e){
+				this.value = e?e.detail.value:''
+			},
+			getData(){
+				showLoading({title: '加载中'})
+				ShoseSearch({
+					method: 'get',
+					data: {
+						key: this.value,
+						pageNum: this.pageNum,
+						pageSize: this.pageSize,
+						type: 3
+					}
+				}).then(res=>{
+					hideLoading()
+					if(res.code == 200){
+						this.productList = this.productList.concat(res.rows);
+					}
+				})
+			},
+			collection(e,id){
+				
+				console.log(e)
+				if(this.productList[e].isCollection){
+					CollectionEdit({
+						header: {
+							'content-type':'application/x-www-form-urlencoded'
+						},
+						data: {
+							shoseId: id
+						}
+					}).then(res=>{
+						showToast({title: res.msg, icon: 'none'})
+						if(res.code == 200){
+							this.productList[e].isCollection = 0
+						}
+					})
+				}else{
+					CollectionAdd({
+						header: {
+							'content-type':'application/x-www-form-urlencoded'
+						},
+						data: {
+							shoseId: id
+						}
+					}).then(res=>{
+						showToast({title: res.msg, icon: 'none'})
+						if(res.code == 200){
+							this.productList[e].isCollection = 1
+						}
+					})
+				}
+			},
+		},
+		onShow() {
+			this.getData();
+		},
+		onReachBottom() {
+			this.pageNum++
+			this.getData();
+		},
+		onPullDownRefresh() {
+			this.getData();
+		},
 	}
 </script>
 

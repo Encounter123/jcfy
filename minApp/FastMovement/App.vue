@@ -17,7 +17,7 @@
 			getDeviceInfo() {
 				let systemInfo = wx.getSystemInfoSync()
 				let numberSize = systemInfo.windowHeight-systemInfo.statusBarHeight-systemInfo.safeArea.height
-				if ( numberSize<0 ) {
+				if ( numberSize>0 ) {
 					this.$store.commit('setIphoneX', true)
 				}
 			}

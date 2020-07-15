@@ -1,4 +1,4 @@
-export const baseURL = 'http://e22vti.natappfree.cc'
+export const baseURL = 'http://aibgse.natappfree.cc'
 // export const baseURL = 'http://192.168.0.123:8080'
 // export const baseURL = 'http://192.168.0.129:8080'
 

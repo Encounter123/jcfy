@@ -15,36 +15,53 @@
 </template>
 
 <script>
-import { UpdateByWx, ShopBannerList } from '@/api/api.js';
+import { UpdateByWx, ShopBannerList, LoginByWx } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 
 export default {
 	data() {
 		return {
-			imageURL: 'http://sjbz.fd.zol-img.com.cn/t_s1080x1920c/g3/M02/0E/0D/ChMlV17oT-6IZ0ZcACCEJ-b0kqYAAU0mQJzD-4AIIQ_684.jpg',
-			authorizationLogin: false
+			imageURL: 'http://sjbz.fd.zol-img.com.cn/t_s1080x1920c/g3/M02/0E/0D/ChMlV17oT-6IZ0ZcACCEJ-b0kqYAAU0mQJzD-4AIIQ_684.jpg'
 		};
 	},
 	methods: {
 		wechatLogin(e) {
-			console.log(e)
+			let _this = this
 			let status1 = e.detail.errMsg.indexOf('deny')
 			let status2 = e.detail.errMsg.indexOf('fail')
 			if (status1 == -1 && status2 == -1) {
-				console.log(11)
 				showLoading({title:'加载中...'})
-				UpdateByWx({
-					data:{
-						...e.detail.userInfo
+				
+				uni.login({
+					provider: 'weixin',
+					success: function(res) {
+						LoginByWx({
+							data: {
+								code: res.code
+							}
+						}).then(res => {
+							uni.setStorageSync('sessionToken', res.rows[0].token);
+							UpdateByWx({
+								data:{
+									...e.detail.userInfo
+								}
+							}).then(res=>{
+								if(res.code == 200){
+									if(res.rows[0].position){
+										uni.setStorageSync('userInformation',JSON.stringify(res.rows[0]))
+										_this.$store.commit('setUserIdentity',res.rows[0].position==1?'Buyer':'Seller')
+										switchTab('/pages/homePage/homePage')
+									}else{
+										navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
+									}
+								}else{
+									showToast({title: res.msg, icon: 'none'})
+								}
+							})
+						});
 					}
-				}).then(res=>{
-					if(res.code == 200){
-						navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
-					}else{
-						showToast({title: res.msg, icon: 'none'})
-					}
-				})
+				});
 				
 			}else{
 				hideLoading()
@@ -54,24 +71,9 @@ export default {
 		},
 		toPhoneLogin(){
 			navigateTo('/pages/signIn/login/login')
-		},
-		// 获取背景图
-		backgroundMap() {
-			ShopBannerList({
-				method: 'get'
-			}).then(res => {
-				hideLoading()
-				console.log(res);
-				this.imageURL = res.rows[2].bannerImg;
-			}).catch(()=>{
-				hideLoading()
-			})
 		}
 	},
-	onLoad() {
-		showLoading({title:'加载中...'})
-		this.backgroundMap();
-	}
+	onLoad() {}
 };
 </script>
 

@@ -8,7 +8,7 @@
 		<block v-if="productList.length>0">
 
 			<view class="smallBg" v-for="(item,index) in productList" :key="index">
-				<view><image mode="aspectFill" :src="item.img"></image></view>
+				<view><image mode="aspectFit" :src="item.img"></image></view>
 				<view>
 					<view class="spacing">
 						<text>
@@ -25,7 +25,7 @@
 							<text class="title">尺码：</text>
 							{{item.size}}
 						</text>
-						<text style="margin-left: 80rpx;">
+						<text>
 							<text class="title">价格：</text>
 							{{item.price}}
 						</text>
@@ -35,16 +35,17 @@
 							<text class="title">求货方：</text>
 							{{item.askingGoodName}}
 						</text>
-						<text style="margin-left:80rpx;">
+						<text>
 							<text class="title">时间：</text>
 							{{item.createTime | TimestampToTime}}
 						</text>
 					</view>
-					<view class="spacing">
-						<text>
-							<text class="title">过期时间:</text>
+					<view class="spacing" >
+						<text style="flex: 0 0 70%;">
+							<text class="title" style="flex: 0 0 70%;">过期时间:</text>
 							{{item.endDate}}
 						</text>
+						<button v-if="selectIndex==2" class="orderReceivingBtn" @click="purchase(item.orderId,index)">重新发布</button>
 					</view>
 				</view>
 			</view>
@@ -58,7 +59,7 @@
 </template>
 
 <script>
-import { OrderRelease } from '@/api/api.js';
+import { OrderRelease, OrderRePublish } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 import NoData from '@/components/noData/noData.vue'
@@ -90,6 +91,22 @@ export default {
 			this.selectLeft = i * 25 + 9;
 			this.selectIndex = i;
 			this.getData()
+		},
+		purchase(id,i){
+			OrderRePublish({
+				header: {
+					'content-type':'application/x-www-form-urlencoded'
+				},
+				data: {
+					id: id
+				}
+			}).then(res=>{
+				if(res.code == 200){
+					this.productList.splice(i,1)
+				}else{
+					showToast({title: res.msg, icon: 'none'})
+				}
+			})
 		},
 		getData() {
 			showLoading({title: '加载中'})
@@ -181,4 +198,13 @@ export default {
 		}
 	}
 }
+.orderReceivingBtn {
+				padding: 0 20rpx;
+				height: 50rpx;
+				color: #fff;
+				font-size: 20rpx;
+				background-color: #000;
+				line-height: 50rpx;
+				margin: 0;
+			}
 </style>

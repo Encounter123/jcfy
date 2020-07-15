@@ -1,15 +1,15 @@
 <template>
 	<view class="bigBg">
 		<view class="topSwiper">
-			<swiper class="swiper" circular autoplay interval="5000">
-			  <swiper-item><image class="swiperItem" :src="imageURL" mode="aspectFill"></image></swiper-item>
-				<swiper-item><image class="swiperItem" :src="imageURL" mode="aspectFill"></image></swiper-item>
-				<swiper-item><image class="swiperItem" :src="imageURL" mode="aspectFill"></image></swiper-item>
+			<swiper class="swiper" circular autoplay interval="5000" :indicator-dots="true">
+			  <swiper-item v-for="(item,index) in imageUrlList" :key="index">
+					<image class="swiperItem" :src="item.bannerImg" mode="aspectFill"></image>
+				</swiper-item>
 			</swiper>
-			<view class="seach">
+			<!-- <view class="seach">
 				<input type="text" class="seachInput" v-model="seachInput" @confirm="seach()" />
 				<image src="../../static/img/search.png" class="searchImg" @tap="seach"></image>
-			</view>
+			</view> -->
 		</view>
 		
 		<view class="lb2Bg">
@@ -48,11 +48,11 @@ import NoData from "@/components/noData/noData.vue"
 export default {
 	data() {
 		return {
-			imageURL: 'http://seopic.699pic.com/photo/50054/0643.jpg_wh1200.jpg',
 			pageSize: 10,
 			pageNum: 1,
 			productList: [],
 			seachInput: '',
+			imageUrlList:[],
 		};
 	},
 	components:{
@@ -79,7 +79,7 @@ export default {
 				data: {
 					pageSize: this.pageSize,
 					pageNum: number,
-					shoseNo: this.seachInput
+					// shoseNo: this.seachInput
 				}
 			}).then(res => {
 				hideLoading()
@@ -92,7 +92,9 @@ export default {
 			ShopBannerList({
 				method: 'get'
 			}).then(res=>{
-				this.imageURL = res.rows[0].bannerImg;
+				if(res.code == 200){
+					this.imageUrlList = res.rows
+				}
 			})
 		},
 		collection(e){
@@ -116,7 +118,14 @@ export default {
 	},
 	onPullDownRefresh() {
 		this.init();
+	},
+	onShareAppMessage(res) {
+		return {
+			title: '火速搬砖',
+			path: '/page/start/start'
+		}
 	}
+
 };
 </script>
 

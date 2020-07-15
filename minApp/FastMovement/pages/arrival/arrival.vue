@@ -16,13 +16,16 @@
 			</block>
 			<block v-else>
 				<view class="allStores">所有门店</view>
-				<view>
-					<view class="storeBox">
-						<text class="store" @click="toTarget()">北京朝阳</text>
-						<text class="store">北京朝阳</text>
-						<text class="store">北京朝阳</text>
+				<block v-if="productList.length>0">
+					<view>
+						<view class="storeBox">
+							<text class="store" @click="toTarget()" v-for="(item,index) in productList" :key="index">{{item}}</text>
+						</view>
 					</view>
-				</view>
+				</block>
+				<block v-else>
+					<no-data></no-data>
+				</block>
 			</block>
 		</view>
 	</view>
@@ -45,7 +48,6 @@ export default {
 
 			pageSize: 10,
 			pageNum: 1,
-			productList: [],
 		};
 	},
 	components: {
@@ -55,7 +57,7 @@ export default {
 	},
 	methods: {
 		toTarget(){
-			navigateTo('/pages/retailStore/retailInfo/retailInfo')
+			// navigateTo('/pages/retailStore/retailInfo/retailInfo')
 		},
 		init() {
 			this.productList = []

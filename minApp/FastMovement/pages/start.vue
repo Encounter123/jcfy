@@ -20,29 +20,15 @@ export default {
 		//Buyer  Seller
 		// this.$store.commit('setUserIdentity','Buyer')
 		// console.log(this.UserIdentity)
+		// redirectTo('/pages/signIn/signIn');
+		let userInformation = uni.getStorageSync('userInformation')?JSON.parse(uni.getStorageSync('userInformation')) : {}
+		if(userInformation.position){
+			this.$store.commit('setUserIdentity', userInformation.position==1?'Buyer':'Seller')
+			switchTab('/pages/homePage/homePage');
+		}else{
+			redirectTo('/pages/signIn/signIn');
+		}
 
-		uni.login({
-			provider: 'weixin',
-			success: function(res) {
-				console.log(res.code);
-
-				LoginByWx({
-					data: {
-						code: res.code
-					}
-				}).then(res => {
-					console.log(res);
-					uni.setStorageSync('sessionToken', res.rows[0].token);
-					uni.setStorageSync('userInformation', JSON.stringify(res.rows[0]));
-					if (res.rows[0].position && res.rows[0].position > 0) {
-						_this.$store.commit('setUserIdentity', res.rows[0].position == 1 ? 'Buyer' : 'Seller');
-						switchTab('/pages/homePage/homePage');
-					} else {
-						redirectTo('/pages/signIn/signIn');
-					}
-				});
-			}
-		});
 	}
 };
 </script>

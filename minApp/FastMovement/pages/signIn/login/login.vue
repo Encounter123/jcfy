@@ -28,6 +28,7 @@ export default {
 			msg: '',
 			verCode: '',
 			mobilePhone:'',
+			phoneType:1
 		};
 	},
 	methods: {
@@ -38,7 +39,7 @@ export default {
 				//验证码
 				self.disabled = true;
 				self.ismMsg = true;
-				var time = 10; //时间为10s，可以按情况更改
+				var time = 60; //时间为10s，可以按情况更改
 				var timer = setInterval(fun, 1000); //设置定时器
 				function fun() {
 					time--;
@@ -58,7 +59,21 @@ export default {
 						phone: this.mobilePhone
 					}
 				}).then(res=>{
-					showToast({title: '短信验证码发送成功', icon: 'none'})
+					if(res.code!=200){
+						BizMsg({
+							data:{
+								bizType: 2,
+								msgType: 1,
+								phone: this.mobilePhone
+							}
+						}).then(res=>{
+							this.phoneType = 2
+							showToast({title: '短信验证码发送成功', icon: 'none'})
+						})
+					}else{
+						this.phoneType = 1
+						showToast({title: '短信验证码发送成功', icon: 'none'})
+					}
 				})
 			}else{
 				showToast({title: '请输入正确的手机号', icon:'none'})
@@ -73,13 +88,20 @@ export default {
 					},
 					data:{
 						authCode: this.verCode,
-						type: 1,
+						type: this.phoneType,
 						phone: this.mobilePhone
 					}
 				}).then(res=>{
 					if(res.code == 200){
 						uni.setStorageSync('sessionToken', res.rows[0].token)
-						navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
+						if(res.rows[0].position){
+							uni.setStorageSync('userInformation',JSON.stringify(res.rows[0]))
+							this.$store.commit('setUserIdentity',res.rows[0].position==1?'Buyer':'Seller')
+							switchTab('/pages/homePage/homePage')
+						}else{
+							navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
+						}
+						
 					}else{
 						showToast({title: res.msg, icon: 'none'})
 					}

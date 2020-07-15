@@ -2,20 +2,21 @@
 	<view class="smallBg">
 		<view><image class="image" mode="aspectFit" :src="item.img || item.shoseImg"></image></view>
 		<view style="display: flex;flex-direction: column;align-items: center;justify-content: space-between;">
+			<block v-if="type!='home'">
+				<!-- <view class="spacing">{{item.shoseName}}</view> -->
+			</block>
 			<view class="spacing">
 				<text>
 					<text class="title">货号：</text>
 					{{ item.shoseNo || item.goodNo }}
 				</text>
 				<text>
-					<text class="title">数量：</text>
+					<text class="title">{{item.count?'数量':'库存'}}：</text>
 					{{ item.shoseStock || item.count }}
 				</text>
 			</view>
 			
-			<block v-if="type!='home'">
-				<view class="spacing">{{item.shoseName}}</view>
-			</block>
+			
 			<block v-if="type=='home'">
 				<view class="spacing">
 					<text>
@@ -46,18 +47,19 @@
 				</view>
 			</block>
 			
+			
 			<block v-if="type!='home'">
 				<view class="spacing">
-					<text>
-						<text class="title">吊牌价格：</text>
-						￥{{item.issuePrice || 0}}
-					</text>
 					<text>
 						<text class="title">折扣价格：</text>
 						￥{{item.shosePrice || 0}}
 					</text>
+					<text>
+						<text class="title">品牌价格：</text>
+						￥{{item.issuePrice || 0}}
+					</text>
 				</view>
-				<view v-if="DownPrice" class="spacing" :style="{color: item.shoseChange>0?'red':'green'}">比前一天{{item.shoseChange>0?'增加了':'降价了'}}{{item.shoseChange | MathAbs}}</view>
+				<view v-if="DownPrice" class="spacing" :style="{color: item.shoseChange>0?'green':'red'}">比前一天{{item.shoseChange>0?'增':'降'}}{{item.shoseChange | MathAbs}}</view>
 				<view class="spacing spacingBetween">
 					<image @click="collection()" mode="aspectFill" :src="item.isCollection?'../../static/img/love1.png':'../../static/img/love.png'" class="loveImg"></image>
 				  <button v-if="UserIdentity=='Buyer'" class="orderReceivingBtn" @click="purchase(item)">一键求购</button>
@@ -119,7 +121,9 @@
 				}).then(res=>{
 					if(res.code == 200){
 						showToast({title:'接单成功！', icon: 'none'})
-						this.$emit('acceptSuccess')
+						setTimeout(()=>{
+							this.$emit('acceptSuccess')
+						},1500)
 					}else{
 						showToast({title: res.msg, icon: 'none'})
 					}

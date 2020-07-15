@@ -30,9 +30,6 @@ export default {
 		};
 	},
 	methods: {
-		init() {
-			this.backgroundMap();
-		},
 		submitBtn(val) {
 			showModal({
 				title: '提示',
@@ -60,23 +57,9 @@ export default {
 					showToast({title: res.msg,icon:'none'})
 				}
 			})
-			
-			
-		},
-		// 获取背景图
-		backgroundMap() {
-			ShopBannerList({
-				method: 'get'
-			}).then(res => {
-				console.log(res)
-				this.imageURL = res.rows[2].bannerImg;
-			});
 		}
 	},
-	onLoad(options) {
-		console.log(options)
-		this.init();
-	}
+	onLoad(options) {}
 };
 </script>
 

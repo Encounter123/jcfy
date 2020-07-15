@@ -6,9 +6,9 @@
 		</view>
 		
 		<block v-if="productList.length>0">
-			<view class="myOrderBg" v-for="(item,index) in productList" :key="index">
+			<view class="myOrderBg" v-for="(item,index) in productList" :key="index" @click="toPay(item,'detail')">
 				<view class="orderReceiving" v-if="selectIndex!=0&&selectIndex!=3">
-					<text class="waybill" @click="copyLogisticsNo(item.logisticsNo)">{{item.logisticsCompany+'：'+item.logisticsNo}}</text>
+					<text class="waybill" @click.stop="copyLogisticsNo(item.logisticsNo)">{{item.logisticsCompany+'：'+item.logisticsNo}}</text>
 					<text>{{tarTab[selectIndex]}}</text>
 				</view>
 				<view class="myOrderBottonBorder"></view>
@@ -39,12 +39,12 @@
 						<view>X{{item.count}}</view>
 					</view>
 				</view>
-				<view v-if="selectIndex==0" class="myOrderBottonBorder"></view>
+				<view v-if="selectIndex==0||(selectIndex==1&&UserIdentity=='Buyer')" class="myOrderBottonBorder"></view>
 				<view v-if="selectIndex==0" class="myOrderBtn">
-					<view class="orderReceivingBtn" @click="returnOrder(item.orderId,index)">退订单</view>
+					<view class="orderReceivingBtn" @click.stop="returnOrder(item.orderId,index)">退订单</view>
 					<block v-if="UserIdentity=='Buyer'">
 						<block v-if="item.state==1">
-							<view class="orderReceivingBtn" @click="toPay(item)">付款</view>
+							<view class="orderReceivingBtn" @click.stop="toPay(item,'pay')">付款</view>
 						</block>
 						<block v-else>
 							<view class="orderReceivingBtn">已付款</view>
@@ -52,9 +52,12 @@
 					</block>
 					<block v-else>
 						<block v-if="item.state==4">
-							<view class="orderReceivingBtn" @click="toConsignment(item.orderId)">去发货</view>
+							<view class="orderReceivingBtn" @click.stop="toConsignment(item.orderId)">去发货</view>
 						</block>
 					</block>
+				</view>
+				<view v-if="selectIndex==1&&UserIdentity=='Buyer'">
+					<view class="orderReceivingBtn" @click.stop="submitOrder(item.orderId,index)">确认收货</view>
 				</view>
 			</view>
 		</block>
@@ -79,7 +82,7 @@
 </template>
 
 <script>
-import { TakeOrderList, OrderRefund, OrderDelivery } from '@/api/api.js';
+import { TakeOrderList, OrderRefund, OrderDelivery, OrderConfirm } from '@/api/api.js';
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js';
 import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js';
 import NoData from '@/components/noData/noData.vue'
@@ -159,8 +162,8 @@ export default {
 			})
 			
 		},
-		toPay(item){
-			navigateTo('/pages/confirmOrder/confirmOrder',{item: JSON.stringify(item)})
+		toPay(item,type){
+			navigateTo('/pages/confirmOrder/confirmOrder',{item: JSON.stringify(item),type: type})
 		},
 		toConsignment(id){
 			this.orderId = id
@@ -184,6 +187,27 @@ export default {
 					this.getData();
 				}
 			})
+		},
+		submitOrder(id,i){
+			showModal({
+				title: '确认收货？'
+			}).then(()=>{
+				OrderConfirm({
+					header: {
+						'content-type':'application/x-www-form-urlencoded'
+					},
+					data: {
+						id: id
+					}
+				}).then(res=>{
+					if(res.code == 200){
+						this.productList.splice(i,1)
+					}else{
+						showToast({title: res.msg, icon: 'none'})
+					}
+				})
+			})
+			
 		}
 	},
 	onShow() {
