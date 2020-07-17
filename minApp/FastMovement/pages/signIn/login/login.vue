@@ -97,7 +97,7 @@ export default {
 						if(res.rows[0].position){
 							uni.setStorageSync('userInformation',JSON.stringify(res.rows[0]))
 							this.$store.commit('setUserIdentity',res.rows[0].position==1?'Buyer':'Seller')
-							switchTab('/pages/homePage/homePage')
+							switchTab('/pages/arrival/arrival')
 						}else{
 							navigateTo('/pages/signIn/registeredIdentity/registeredIdentity');
 						}

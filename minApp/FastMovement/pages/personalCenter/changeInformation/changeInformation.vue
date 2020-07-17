@@ -66,7 +66,7 @@
 								signature: _this.client.signature
 							},
 							success: (res)=>{
-								_this.userInformation.wxHead = _this.client.host + '/' + fileName
+								_this.userInformation.head = _this.client.host + '/' + fileName
 								_this.imageSrc = imageSrc
 								hideLoading()
 							},
@@ -97,7 +97,7 @@
 		},
 		onLoad() {
 			this.userInformation = JSON.parse(uni.getStorageSync('userInformation')) || {};
-			this.imageSrc = this.userInformation.wxHead || ''
+			this.imageSrc = this.userInformation.head || ''
 			console.log(this.userInformation)
 			let _this = this
 			uni.request({

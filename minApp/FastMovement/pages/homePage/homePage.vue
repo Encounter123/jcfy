@@ -63,22 +63,22 @@ export default {
 		init() {
 			this.productList = []
 			this.pageNum = 1
-			this.ProductList(this.pageNum);
+			this.ProductList();
 			this.backgroundMap();
 		},
 
 		seach() {
 			this.productList = [];
-			this.ProductList(this.pageNum);
+			this.ProductList();
 		},
 		// 获取页面列表数据
-		ProductList(number) {
+		ProductList() {
 			showLoading({title: '加载中'})
 			OrderList({
 				method: 'get',
 				data: {
 					pageSize: this.pageSize,
-					pageNum: number,
+					pageNum: this.pageNum,
 					// shoseNo: this.seachInput
 				}
 			}).then(res => {
@@ -114,7 +114,8 @@ export default {
 	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {
-		this.ProductList(this.pageNum++);
+		this.pageNum++
+		this.ProductList();
 	},
 	onPullDownRefresh() {
 		this.init();

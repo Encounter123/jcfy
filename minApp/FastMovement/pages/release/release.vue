@@ -8,7 +8,7 @@
 		</view>
 		<view class="changeLb1">
 			<text style="margin-left: 20rpx;">货号</text>
-			<input type="text" v-model="form.goodNo" placeholder="请输入货号"/>
+			<input type="text" :disabled="form.shoseId" v-model="form.goodNo" placeholder="请输入货号"/>
 		</view>
 		<view class="changeBottomBorder"></view>
 		<view class="changeLb1">
@@ -18,34 +18,50 @@
 		<view class="changeBottomBorder"></view>
 		<view class="changeLb1">
 			<text style="margin-left: 20rpx;">尺码</text>
-			<input type="text" v-model="form.size"  placeholder="请输入尺码"/>
+			<input type="text" :disabled="form.shoseId" v-model="form.size"  placeholder="请输入尺码"/>
 		</view>
 		<view class="changeBottomBorder"></view>
 		<view class="changeLb1">
 			<text style="margin-left: 20rpx;">价格</text>
-			<input type="text" v-model="form.price" placeholder="请输入价格(元)"/>
+			<input type="number" v-model="form.price" placeholder="请输入价格(元)"/>
 		</view>
+		
+		
 		<view class="changeBottomBorder"></view>
 		<view class="changeLb1">
 			<text style="margin-left: 20rpx;">求购方</text>
-			<input type="text" v-model="form.askingGoodName" placeholder="请输入求购方姓名"/>
+			<input type="text" maxlength="15" v-model="form.askingGoodName" placeholder="请输入求购方姓名"/>
 		</view>
 		<view class="changeBottomBorder"></view>
 		<view class="changeLb1">
 			<text style="margin-left: 20rpx;">过期时间</text>
-			<input type="number" v-model="form.expireDay" placeholder="请输入过期时间(天)"/>
+			<input type="number" maxlength="2" v-model="form.expireDay" placeholder="请输入过期时间(天)"/>
 		</view>
 		<view class="changeBottomBorder"></view>
 		<view class="preservation" @click="release" :style="{ bottom: FixedBottomHeight + 'px' }">发布</view>
+	
+		<!-- <uni-popup type="bottom" ref="popup">
+			<view class="popup">
+				<view class="popup-title">选择尺码</view>
+				<view class="popup-content">
+					<view>4.5</view>
+					<view>5.5</view>
+				</view>
+			</view>
+		</uni-popup> -->
+	
+	
+	
+	
 	</view>
 </template>
 
 <script>
-	import { OrderPublish } from '@/api/api.js';
-	import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
-	import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js'
-	import { baseURL } from '../../config.js'
-	
+import { OrderPublish } from '@/api/api.js';
+import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
+import { showModal, showToast, hideLoading, showLoading } from '@/common/toast.js'
+import { baseURL } from '../../config.js'
+import UniPopup from '@/components/uni-popup/uni-popup.vue';
 	
 export default {
 	data() {
@@ -62,6 +78,9 @@ export default {
 				img: ''
 			}
 		};
+	},
+	components:{
+		UniPopup
 	},
 	methods: {
 		chooseImage(){
@@ -112,7 +131,7 @@ export default {
 					if (res.code == 200) {
 						setTimeout(()=>{
 							navigateBack()
-						},2000)
+						},1500)
 					}
 				})
 				// showToast({title: 'ok', icon: 'none'})
@@ -123,6 +142,12 @@ export default {
 		}
 	},
 	onLoad(options) {
+		// this.$refs.popup.open()
+		
+		
+		
+		
+		
 		let _this = this
 		uni.request({
 			url: baseURL + '/app/aliyun/oss/policy',
@@ -139,6 +164,7 @@ export default {
 			this.form.size = form.shoseSize
 			this.form.price = form.shosePrice
 			this.form.img = form.shoseImg
+			this.form.shoseId = form.shoseId
 			this.imageSrc = form.shoseImg
 		}
 	}
@@ -146,6 +172,30 @@ export default {
 </script>
 
 <style lang="less">
+.popup{
+	padding: 30rpx;
+	background-color: #fff;
+	border-radius: 12rpx;
+	&-title{
+		font-weight: bold;
+	}
+	&-content{
+		display: flex;
+		flex-wrap: wrap;
+	}
+	&-item{
+		height: 40rpx;
+		line-height: 40rpx;
+		text-align: center;
+		padding: 0 10rpx;
+		margin: 10rpx;
+		border-radius: 6rpx;
+		border: 1rpx solid #eee;
+	}
+}
+	
+	
+	
 uni-page-body,
 html,
 body {

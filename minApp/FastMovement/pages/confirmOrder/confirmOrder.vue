@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="receivingAddress" @click="toAddress">
+		<view class="receivingAddress" @click="toAddress" v-if="UserIdentity=='Buyer'">
 			<view><image src="../../static/img/adress1.png" mode=""></image></view>
 			<view class="addressMsg" v-if="address.addressId">
 				<view>
@@ -10,11 +10,24 @@
 				<view><text>{{address.province+address.city+address.area+address.detailed}}</text></view>
 			</view>
 			<view v-else class="addressMsg" style="align-items: center;">
-				<view v-if="UserIdentity=='Buyer'">请选择收货地址</view>
-				<view v-else>等待求购者付款</view>
+				<view>请选择收货地址</view>
 			</view>
 			<view class="nextPage"><image v-if="showPay" style="width: 30rpx;height: 30rpx;" src="../../static/img/arrow.png" mode=""></image></view>
 		</view>
+		<view class="receivingAddress" v-else>
+			<view><image src="../../static/img/adress1.png" mode=""></image></view>
+			<view class="addressMsg" v-if="information.askingPhone">
+				<view>
+					<text style="font-size: 30rpx">{{information.askingName}}</text>
+					<text style="margin-left: 30rpx;">{{information.askingPhone}}</text>
+				</view>
+				<view><text>{{information.askingAddress}}</text></view>
+			</view>
+			<view v-else class="addressMsg" style="align-items: center;">
+				<view>等待求购者填写收货地址</view>
+			</view>
+		</view>
+		
 
 		<view class="receivingAddress1">
 			<view class="userName">{{information.askingGoodName}}</view>

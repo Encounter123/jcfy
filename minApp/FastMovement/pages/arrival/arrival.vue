@@ -19,7 +19,7 @@
 				<block v-if="productList.length>0">
 					<view>
 						<view class="storeBox">
-							<text class="store" @click="toTarget()" v-for="(item,index) in productList" :key="index">{{item}}</text>
+							<text class="store" @click="toTarget(item)" v-for="(item,index) in productList" :key="index">{{item}}</text>
 						</view>
 					</view>
 				</block>
@@ -45,6 +45,7 @@ export default {
 			productList: [],
 			ShowHidden: false,
 			pageType: 0,
+			value:'',
 
 			pageSize: 10,
 			pageNum: 1,
@@ -56,13 +57,13 @@ export default {
 		NoData
 	},
 	methods: {
-		toTarget(){
-			// navigateTo('/pages/retailStore/retailInfo/retailInfo')
+		toTarget(name){
+			navigateTo('/pages/retailStore/retailInfo/retailInfo',{item:name})
 		},
 		init() {
 			this.productList = []
 			this.pageNum = 1
-			this.ProductList(this.pageNum);
+			this.ProductList();
 		},
 		// 获取页面列表数据
 		ProductList(number) {
@@ -71,7 +72,7 @@ export default {
 				method: 'get',
 				data: {
 					pageSize: this.pageSize,
-					pageNum: number,
+					pageNum: this.pageNum,
 					// shoseNo: this.seachInput
 				}
 			}).then(res => {
@@ -81,8 +82,7 @@ export default {
 			});
 		},
 		collection(e,id){
-			
-			console.log(e)
+			// console.log(e)
 			if(this.productList[e].isCollection){
 				CollectionEdit({
 					header: {
@@ -114,18 +114,19 @@ export default {
 			}
 		},
 		search(e){
-			showLoading({title: '加载中'})
 			this.pageType = e.type
-			let value = e.value
-			
+			this.value = e.value
 			console.log(e)
 			this.productList = []
 			this.pageNum = 1
-			
+			this.getSearchList()
+		},
+		getSearchList(){
+			showLoading({title: '加载中'})
 			ShoseSearch({
 				method: 'get',
 				data: {
-					key: value,
+					key: this.value,
 					pageNum: this.pageNum,
 					pageSize: this.pageSize,
 					type: this.pageType
@@ -136,22 +137,26 @@ export default {
 					this.productList = this.productList.concat(res.rows);
 				}
 			})
-			
-			
-			
-			
 		}
 	},
 	onShow() {
+		this.productList = []
+		this.ShowHidden = false
+		this.pageType = 0
 		this.init();
 	},
 	onLoad() {
 		
-		
 	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {
-		this.ProductList(this.pageNum++);
+		this.pageNum++
+		if(this.value!=''){
+			this.getSearchList()
+		}else{
+			this.ProductList();
+		}
+		
 	},
 	onPullDownRefresh() {
 		this.init();

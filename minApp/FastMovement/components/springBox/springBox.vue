@@ -48,7 +48,7 @@ export default {
 	data() {
 		return {
 			showHidden: false,
-			dateinit: '',
+			dateinit: '请输入货号',
 			showHistory: false,
 			type: 1,
 			inputValue:'',
@@ -146,7 +146,7 @@ export default {
 	background-color: #fff;
 	box-shadow: 0 0 10rpx #eee;
 	.arrivalSmallsearch {
-		width: 100%;
+		width: 95%;
 		display: flex;
 		justify-content: space-between;
 		.arrivalSearchInput {
@@ -156,10 +156,10 @@ export default {
 			font-size: 25rpx;
 			margin-left: 10rpx;
 			margin-top: 10rpx;
-			width: 608rpx;
+			width: 570rpx;
 		}
 		input {
-			width: 80%;
+			// width: 80%;
 			margin-left: 40rpx;
 			margin-top: 10rpx;
 		}
@@ -194,7 +194,7 @@ export default {
 	.d4 {
 		width: 0;
 		height: 0;
-		margin-left: 200rpx;
+		margin-left: 170rpx;
 		margin-top: -20rpx;
 		border-width: 20rpx;
 		border-style: solid;

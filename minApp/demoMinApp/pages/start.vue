@@ -17,15 +17,12 @@ export default {
 		showLoading({ title: '加载中，请稍等...' });
 		let _this = this;
 
-		//Buyer  Seller
-		// this.$store.commit('setUserIdentity','Buyer')
-		// console.log(this.UserIdentity)
-		// redirectTo('/pages/signIn/signIn');
 		let userInformation = uni.getStorageSync('userInformation')?JSON.parse(uni.getStorageSync('userInformation')) : {}
 		if(userInformation.position){
-			this.$store.commit('setUserIdentity', userInformation.position==1?'Buyer':'Seller')
+			
 			switchTab('/pages/arrival/arrival');
 		}else{
+			
 			redirectTo('/pages/signIn/signIn');
 		}
 

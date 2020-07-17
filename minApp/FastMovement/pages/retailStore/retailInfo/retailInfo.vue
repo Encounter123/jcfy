@@ -1,16 +1,16 @@
 <template>
 	<view>
 		<view class="storeBackground">
-			<image src="http://seopic.699pic.com/photo/50066/3937.jpg_wh1200.jpg" mode=""></image>
+			<image src="../../../static/img/big_a61a3a6f47cc85ffaa9a8967da564e9d.png" mode=""></image>
 		</view>
 		<view class="storeBox">
 		   <view class="storeName">
-		   	  这里是门店名称
+		   	  {{name}}
 		   </view>
-		   <view class="address">
+		  <!-- <view class="address">
 				<text>600m <text class="addressLb">|</text></text>
 				<text>北京市——朝阳--朝阳北路101号</text>
-		   </view>
+		   </view> -->
 		   
 		</view>
 	</view>
@@ -22,8 +22,11 @@
 	export default {
 		data() {
 			return {
-				
+				name:''
 			};
+		},
+		onLoad(options) {
+			this.name = options.item
 		}
 	}
 </script>

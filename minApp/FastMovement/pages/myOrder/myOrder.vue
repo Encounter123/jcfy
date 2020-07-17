@@ -56,7 +56,7 @@
 						</block>
 					</block>
 				</view>
-				<view v-if="selectIndex==1&&UserIdentity=='Buyer'">
+				<view class="myOrderBtn" v-if="selectIndex==1&&UserIdentity=='Buyer'">
 					<view class="orderReceivingBtn" @click.stop="submitOrder(item.orderId,index)">确认收货</view>
 				</view>
 			</view>
@@ -64,6 +64,7 @@
 		<block v-else>
 			<no-data></no-data>
 		</block>
+		
 		
 		<uni-popup type="center" ref="popup">
 			<view class="popup">

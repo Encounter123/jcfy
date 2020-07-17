@@ -170,27 +170,26 @@
 		{
 			"path": "pages/release/release",
 			"style": {
-				"navigationBarTitleText": "发布",
-				"navigationBarBackgroundColor": "#F0F2F5"
+				"navigationBarTitleText": "发布信息",
+				"navigationBarBackgroundColor": "#fff"
 			}
 		}
 	],
 	"tabBar": {
 		"color": "#333",
 		"selectedColor": "#333",
-		"list": [{
-				"pagePath": "pages/homePage/homePage",
-				"text": "首页",
-				"iconPath": "static/img/homePage1.png",
-				"selectedIconPath": "static/img/homePage.png"
-			},
+		"list": [
 			{
 				"pagePath": "pages/arrival/arrival",
 				"text": "任务大厅",
 				"iconPath": "static/img/task1.png",
 				"selectedIconPath": "static/img/task.png"
-			},
-			{
+			},{
+				"pagePath": "pages/homePage/homePage",
+				"text": "首页",
+				"iconPath": "static/img/homePage1.png",
+				"selectedIconPath": "static/img/homePage.png"
+			},{
 				"pagePath": "pages/personalCenter/personalCenter",
 				"text": "个人中心",
 				"iconPath": "static/img/Personal1.png",

@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<view class="search">
-			<input type="text" value="" placeholder="请输入货名或货号" />
-			<image src="../../static/img/search.png" mode=""></image>
+			<input type="text" value="" placeholder="请输入货名或货号" @input="inputValue"/>
+			<image src="../../static/img/search.png" mode="" @click="search"></image>
 		</view>
 
 		
@@ -46,6 +46,11 @@
 			},
 			inputValue(e){
 				this.value = e?e.detail.value:''
+			},
+			search(){
+				this.pageNum = 1
+				this.productList = []
+				this.getData()
 			},
 			getData(){
 				showLoading({title: '加载中'})

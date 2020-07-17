@@ -84,7 +84,11 @@ export default {
 					pageNum: this.pageNum
 				}
 			}).then(res => {
-				this.productList = this.productList.concat(res.rows);
+				if(res.code == 200){
+					this.productList = this.productList.concat(res.rows);
+				}else{
+					showToast({title: res.msg, icon: 'none'})
+				}
 			});
 		}
 	},

@@ -5,15 +5,19 @@
 			<view class="withdrawlBottomBorder"></view>
 			<view class="withdrawlMoney">
 				<text class="withdrawlMoneyText">￥{{userPrice}}元</text>
-				<text class="moneyBtn1" @click="cash">提现</text>
-				<text class="moneyBtn2" @click="showPopup">充值</text>
+				<view>
+					<text class="moneyBtn1" @click="cash">提现</text>
+					<text class="moneyBtn2" @click="showPopup">充值</text>
+				</view>
 			</view>
 		</view>
 		
 		<uni-popup type="center" ref="popup">
 			<view class="popup">
+				<view style="margin: 30rpx 0 50rpx 0;font-weight: bold;">充值</view>
 				<view class="popup-item">
-					<text>充值金额：</text><input type="digit" v-model="price" @input="inputDelivery"></input>
+					<text>充值金额：</text>
+					<input type="digit" v-model="price" @input="inputDelivery"></input>
 				</view>
 				<view class="popup-submit" @click="save">充值</view>
 			</view>
@@ -21,6 +25,7 @@
 		
 		<uni-popup type="center" ref="popupUp">
 			<view class="popup">
+				<view style="margin: 30rpx 0 50rpx 0;font-weight: bold;">提现</view>
 				<view class="popup-item">
 					<text>提现账号：</text><input type="text" v-model="form.account" @input="input('account',$event)"></input>
 				</view>
@@ -31,7 +36,7 @@
 					<text>真实姓名：</text><input type="text" v-model="form.name" @input="input('name',$event)"></input>
 				</view>
 				<view class="popup-item">
-					<text>联系方式：</text><input type="number" v-model="form.phone" @input="input('phone',$event)"></input>
+					<text>联系方式：</text><input maxlength="11" type="number" v-model="form.phone" @input="input('phone',$event)"></input>
 				</view>
 				<view class="popup-submit" @click="beginUp">发起提现</view>
 			</view>
@@ -76,30 +81,35 @@
 				this.price = e.detail.value || 1
 			},
 			beginUp(){
-				showLoading({title: '发起提现'})
-				var _this = this
-				uni.login({
-					provider: 'weixin',
-					success: (res1)=> {
-						OrderWithdrawal({
-							header: {
-								'content-type':'application/x-www-form-urlencoded'
-							},
-							data: {
-								code: res1.code,
-								..._this.form
-							}
-						}).then(res=>{
-							hideLoading()
-							this.$refs.popupUp.close()
-							if(res.code == 200){
-								showToast({title: '已发起提现请求，请等待客服与你联系',icon: 'none'})
-							}else{
-								showToast({title: res.msg,icon: 'none'})
-							}
-						})
-					}
-				})
+				if(this.form.account!=''&&this.form.money!=''&&this.form.name!=''&&this.form.phone!=''){
+					showLoading({title: '发起提现'})
+					var _this = this
+					uni.login({
+						provider: 'weixin',
+						success: (res1)=> {
+							OrderWithdrawal({
+								header: {
+									'content-type':'application/x-www-form-urlencoded'
+								},
+								data: {
+									code: res1.code,
+									..._this.form
+								}
+							}).then(res=>{
+								hideLoading()
+								this.$refs.popupUp.close()
+								if(res.code == 200){
+									this.getMoney()
+									showToast({title: '已发起提现请求，请等待客服与你联系',icon: 'none'})
+								}else{
+									showToast({title: res.msg,icon: 'none'})
+								}
+							})
+						}
+					})
+				}else{
+					showToast({title: '你有未填选项',icon: 'none'})
+				}
 			},
 			save(){
 				showLoading({title: '发起支付'})
@@ -123,6 +133,7 @@
 								package: 'prepay_id='+data.package,
 								success: (e) => {
 									hideLoading()
+									this.getMoney()
 									showToast({title: '支付成功！'})
 									this.$refs.popup.close();
 								},
@@ -151,17 +162,20 @@
 				}
 				return json
 			},
+			getMoney(){
+				OrderGetUser({
+					method: 'get'
+				}).then(res=>{
+					if(res.code == 200){
+						this.userPrice = res.rows[0]
+					}else{
+						this.userPrice = 'X'
+					}
+				})
+			}
 		},
 		onShow() {
-			OrderGetUser({
-				method: 'get'
-			}).then(res=>{
-				if(res.code == 200){
-					this.userPrice = res.rows[0]
-				}else{
-					this.userPrice = 'X'
-				}
-			})
+			this.getMoney()
 		}
 	}
 </script>
@@ -175,17 +189,21 @@
 		&-item{
 			display: flex;
 			margin: 20rpx 0 40rpx 0;
+			height: 70rpx;
+			align-items: center;
 			input{
+				height: 56rpx;
 				border-radius: 6rpx;
 				border: 1rpx solid #eee;
 			}
 		}
 		&-submit{
-			height: 70rpx;
-			line-height: 70rpx;
+			height: 90rpx;
+			line-height: 90rpx;
 			background: #333;
 			color: #fff;
 			text-align: center;
+			border-radius: 12rpx;
 		}
 	}
 .withdrawlBg{
@@ -208,35 +226,38 @@
 	}
 	.withdrawlMoney{
 		line-height: 100rpx;
+		display: flex;
+		justify-content: space-between;
+		padding: 0 10rpx;
 		.withdrawlMoneyText{
 			font-size: 40rpx;
 			font-weight: 600;
 		}
 		.moneyBtn1{
-				width: 100rpx;
-				line-height: 50rpx;
-				text-align: center;
-				height: 50rpx;
-				background-color: #eee;
-			    margin-left: 300rpx;
-				color: #333;
-				display: inline-block;
-				border-radius: 10rpx;
-				font-size: 25rpx;
-			}
-			.moneyBtn2{
-					width: 100rpx;
-					line-height: 50rpx;
-					text-align: center;
-					height: 50rpx;
-					display: inline-block;
-					background-color: #000;
-					margin: 0 10rpx;
-					color: #fff;
-					border-radius: 10rpx;
-					font-size: 25rpx;
-					 margin-left: 30rpx;
-				}
+			width: 100rpx;
+			line-height: 50rpx;
+			text-align: center;
+			height: 50rpx;
+			background-color: #eee;
+				// margin-left: 300rpx;
+			color: #333;
+			display: inline-block;
+			border-radius: 10rpx;
+			font-size: 25rpx;
+		}
+		.moneyBtn2{
+			width: 100rpx;
+			line-height: 50rpx;
+			text-align: center;
+			height: 50rpx;
+			display: inline-block;
+			background-color: #000;
+			margin: 0 10rpx;
+			color: #fff;
+			border-radius: 10rpx;
+			font-size: 25rpx;
+			 margin-left: 30rpx;
+		}
 	}
 	
 }

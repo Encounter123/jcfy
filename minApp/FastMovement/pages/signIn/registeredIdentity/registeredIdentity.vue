@@ -52,7 +52,7 @@ export default {
 				if(res.code==200){
 					uni.setStorageSync('userInformation',JSON.stringify(res.rows[0]))
 					this.$store.commit('setUserIdentity',val==1?'Buyer':'Seller')
-					switchTab('/pages/homePage/homePage')
+					switchTab('/pages/arrival/arrival')
 				}else{
 					showToast({title: res.msg,icon:'none'})
 				}
@@ -92,7 +92,7 @@ body {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		top: 50%;
+		top: 40%;
 		left: 50%;
 		margin-top: -200rpx;
 		margin-left: -200rpx;
