@@ -2,7 +2,7 @@
 	<view>
 		<view class="arrivalSearch">
 			<view class="arrivalSmallsearch">
-				<view class="arrivalSearchInput"><input confirm-type="搜索" type="text" :placeholder="dateinit" @focus="focus" @confirm="submit" v-model="inputValue"/></view>
+				<view class="arrivalSearchInput"><input confirm-type="搜索" type="text" :placeholder="dateinit" @blur="blur" @focus="focus" @confirm="submit" v-model="inputValue"/></view>
 				<image src="../../static/img/nav.png" mode="aspectFill" @click.stop="HiddenClick()"></image>
 			</view>
 		</view>
@@ -100,6 +100,10 @@ export default {
 			this.showHistory = true
 			this.creatHistory()
 		},
+		blur(){
+			this.showHidden = false
+			this.showHistory = false
+		},
 		clickHistory(item,i){
 			let history = uni.getStorageSync('history')?JSON.parse(uni.getStorageSync('history')) : [[],[],[],[]]
 			history[this.type-1].splice(i,1)
@@ -143,31 +147,40 @@ export default {
 	padding: 0 24rpx;
 	box-sizing: border-box;
 	height: 100rpx;
-	background-color: #fff;
-	box-shadow: 0 0 10rpx #eee;
+	line-height: 100rpx;
+	background: rgba(255,255,255,0.5);
+	// background: linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0));
+	// box-shadow: 0 0 10rpx #eee;
 	.arrivalSmallsearch {
 		width: 95%;
+		height: 100rpx;
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
 		.arrivalSearchInput {
 			height: 70rpx;
-			background-color: #f0f1f6;
+			// background-color: #f0f1f6;
 			border-radius: 40rpx;
 			font-size: 25rpx;
-			margin-left: 10rpx;
-			margin-top: 10rpx;
+			// margin-left: 10rpx;
+			// margin-top: 10rpx;
 			width: 570rpx;
 		}
 		input {
 			// width: 80%;
-			margin-left: 40rpx;
-			margin-top: 10rpx;
+			// margin-left: 40rpx;
+			// margin-top: 10rpx;
+			background: rgba(255,255,255,0.1);
+			border: 1rpx solid #eee;
+			padding-left: 20rpx;
+			height: 66rpx;
+			border-radius: 60rpx;
 		}
 		image {
 			width: 40rpx;
 			height: 40rpx;
 			// margin-left: 20rpx;
-			margin-top: 20rpx;
+			// margin-top: 20rpx;
 		}
 	}
 }
@@ -211,7 +224,8 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-top: 15rpx;
+	padding-top: 15rpx;
+	background: #fff;
 	.searchHistoryTitle {
 		margin-left: 15px;
 		font-size: 30rpx;
@@ -225,6 +239,7 @@ export default {
 }
 .historyBigBox {
 	display: flex;
+	background: #fff;
 	.historyBox {
 		width: 80%;
 		display: flex;

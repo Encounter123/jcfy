@@ -1,5 +1,6 @@
 <script>
 	import Vue from 'vue'
+	import { navigateTo } from '@/common/navigation.js'
 	
 	Vue.mixin({
 		computed:{
@@ -17,11 +18,28 @@
 				if ( numberSize>0 ) {
 					this.$store.commit('setIphoneX', true)
 				}
+			},
+			//监听网络状态变化
+			getNetwork(){
+				uni.getNetworkType({
+				    success:(res) => {
+							if(res.networkType=='none'){
+								navigateTo('/pages/404')
+							}
+				    }
+				});
+				uni.onNetworkStatusChange((res) => {
+					if(!res.isConnected){
+						navigateTo('/pages/404')
+					}
+				});
 			}
 		},
 		onLaunch: function() {
 			console.log('App Launch')
+			this.getNetwork()
 			this.getDeviceInfo()
+			
 			const updateManager = uni.getUpdateManager()
 			updateManager.onUpdateReady(function () {
 				uni.showModal({

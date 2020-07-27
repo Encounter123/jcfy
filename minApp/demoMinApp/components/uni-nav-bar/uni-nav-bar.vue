@@ -16,7 +16,7 @@
 				</view>
 				<view class="uni-navbar__header-container uni-navbar__content_view">
 					<view class="uni-navbar__header-container-inner uni-navbar__content_view" v-if="title.length">
-						<text class="uni-nav-bar-text mainfont" :style="{color: color ,marginLeft: marginLeft?'100rpx':'0'}">{{ title }}</text>
+						<text class="uni-nav-bar-text mainfont" :style="{color: color}" style="text-align: center;">{{ title }}</text>
 					</view>
 					<!-- 标题插槽 -->
 					<slot />
@@ -94,10 +94,6 @@
 			border: {
 				type: [String, Boolean],
 				default: false
-			},
-			marginLeft: {
-				type: [String, Boolean],
-				default: true
 			}
 		},
 		mounted() {

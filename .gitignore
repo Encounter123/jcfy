@@ -1,4 +1,7 @@
 node_modules/
 .project
-minApp/FastMovement/unpackage/
 .DS_Store
+minApp/FastMovement/unpackage/
+minApp/demoMinApp/unpackage/
+appDemo/appDemo/unpackage/
+

@@ -1,16 +1,12 @@
 <template>
 	<view class="bigBg">
-		<view class="topSwiper">
+		<!-- <view class="topSwiper">
 			<swiper class="swiper" circular autoplay interval="5000" :indicator-dots="true">
 			  <swiper-item v-for="(item,index) in imageUrlList" :key="index">
 					<image class="swiperItem" :src="item.bannerImg" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
-			<!-- <view class="seach">
-				<input type="text" class="seachInput" v-model="seachInput" @confirm="seach()" />
-				<image src="../../static/img/search.png" class="searchImg" @tap="seach"></image>
-			</view> -->
-		</view>
+		</view> -->
 		
 		<view class="lb2Bg">
 			

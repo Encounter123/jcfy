@@ -20,7 +20,7 @@
 		{
 			"path": "pages/homePage/homePage",
 			"style": {
-				"navigationBarTitleText": "首页",
+				"navigationBarTitleText": "任务大厅",
 				"navigationBarBackgroundColor": "#fff",
 				"enablePullDownRefresh": true, //设置为true表示当前页面开启下拉刷新
 				"backgroundTextStyle": "dark" //下拉 loading 的样式，仅支持 dark/light
@@ -42,7 +42,7 @@
 		{
 			"path": "pages/arrival/arrival",
 			"style": {
-				"navigationBarTitleText": "任务大厅",
+				"navigationBarTitleText": "首页",
 				"navigationBarBackgroundColor": "#fff"
 			}
 		},
@@ -181,14 +181,14 @@
 		"list": [
 			{
 				"pagePath": "pages/arrival/arrival",
-				"text": "任务大厅",
-				"iconPath": "static/img/task1.png",
-				"selectedIconPath": "static/img/task.png"
-			},{
-				"pagePath": "pages/homePage/homePage",
 				"text": "首页",
 				"iconPath": "static/img/homePage1.png",
 				"selectedIconPath": "static/img/homePage.png"
+			},{
+				"pagePath": "pages/homePage/homePage",
+				"text": "任务大厅",
+				"iconPath": "static/img/task1.png",
+				"selectedIconPath": "static/img/task.png"
 			},{
 				"pagePath": "pages/personalCenter/personalCenter",
 				"text": "个人中心",

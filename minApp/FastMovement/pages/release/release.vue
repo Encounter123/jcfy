@@ -75,7 +75,8 @@ export default {
 				price: '',
 				askingGoodName: '',
 				expireDay: '',
-				img: ''
+				img: '',
+				type: 1
 			}
 		};
 	},
@@ -166,6 +167,7 @@ export default {
 			this.form.img = form.shoseImg
 			this.form.shoseId = form.shoseId
 			this.imageSrc = form.shoseImg
+			this.form.type = 0
 		}
 	}
 };
