@@ -12,71 +12,80 @@
 					</view>
 				</view>
 			</view>
-			<view class="personalTitle">
-				<h1 class="userName">{{ userInformation.name }}</h1>
-			</view>
-			<navigator url="../myCollection/myCollection">
-				<view class="myPersonalCenter">
-					<view class="myPersonalCenter-left">
-						<image src="../../static/img/Collection.png" mode="aspectFill"></image>
-						<text class="collection">我的收藏</text>
-					</view>
-					<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
+			<block v-if="!userInformation.position">
+				<view @click="toLogin" class="login">去登录</view>
+			</block>
+			<block v-else>
+				<view class="personalTitle">
+					<h1 class="userName">{{ userInformation.name }}</h1>
 				</view>
-			</navigator>
-			<view class="bottomBorder"></view>
-
-			<navigator url="../myOrder/myOrder">
-				<view class="myPersonalCenter">
-					<view class="myPersonalCenter-left">
-						<image src="../../static/img/order.png" mode="aspectFill"></image>
-						<text class="collection">我的订单</text>
-					</view>
-					<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
-				</view>
-			</navigator>
-			<view class="bottomBorder"></view>
-
-			<block v-if="UserIdentity=='Buyer'">
-				<navigator url="../myReleases/myReleases">
+				<navigator url="../myCollection/myCollection">
 					<view class="myPersonalCenter">
 						<view class="myPersonalCenter-left">
-							<image src="../../static/img/release.png" mode="aspectFill"></image>
-							<text class="collection">我的发布</text>
+							<image src="../../static/img/Collection.png" mode="aspectFill"></image>
+							<text class="collection">我的收藏</text>
 						</view>
 						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 					</view>
 				</navigator>
 				<view class="bottomBorder"></view>
-			</block>
-			
-			<block v-if="UserIdentity=='Buyer'">
-				<navigator url="../existingAddress/existingAddress">
+
+				<navigator url="../myOrder/myOrder">
 					<view class="myPersonalCenter">
 						<view class="myPersonalCenter-left">
-							<image src="../../static/img/adress.png" mode="aspectFill"></image>
-							<text class="collection">收货地址</text>
+							<image src="../../static/img/order.png" mode="aspectFill"></image>
+							<text class="collection">我的订单</text>
 						</view>
 						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
 					</view>
 				</navigator>
 				<view class="bottomBorder"></view>
-			</block>
 
-			<navigator url="../withdrawalAmount/withdrawalAmount">
-				<view class="myPersonalCenter">
-					<view class="myPersonalCenter-left">
-						<image src="../../static/img/money.png" mode="aspectFill"></image>
-						<text class="collection1">可提现现金</text>
+				<block v-if="UserIdentity=='Buyer'">
+					<navigator url="../myReleases/myReleases">
+						<view class="myPersonalCenter">
+							<view class="myPersonalCenter-left">
+								<image src="../../static/img/release.png" mode="aspectFill"></image>
+								<text class="collection">我的发布</text>
+							</view>
+							<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
+						</view>
+					</navigator>
+					<view class="bottomBorder"></view>
+				</block>
+				
+				<block v-if="UserIdentity=='Buyer'">
+					<navigator url="../existingAddress/existingAddress">
+						<view class="myPersonalCenter">
+							<view class="myPersonalCenter-left">
+								<image src="../../static/img/adress.png" mode="aspectFill"></image>
+								<text class="collection">收货地址</text>
+							</view>
+							<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg"></image>
+						</view>
+					</navigator>
+					<view class="bottomBorder"></view>
+				</block>
+
+				<navigator url="../withdrawalAmount/withdrawalAmount">
+					<view class="myPersonalCenter">
+						<view class="myPersonalCenter-left">
+							<image src="../../static/img/money.png" mode="aspectFill"></image>
+							<text class="collection1">可提现现金</text>
+						</view>
+						<view class="myPersonalCenter-left">
+							<text class="collection1Money">￥{{userPrice}}</text>
+							<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg1"></image>
+						</view>
 					</view>
-					<view class="myPersonalCenter-left">
-						<text class="collection1Money">￥{{userPrice}}</text>
-						<image src="../../static/img/arrow.png" mode="aspectFill" class="arrowImg1"></image>
-					</view>
-				</view>
-			</navigator>
-			<view class="bottomBorder"></view>
+				</navigator>
+				<view class="bottomBorder"></view>
+			</block>
+				
 		</view>
+		
+		<login-app ref="loginApp"></login-app>
+		
 	</view>
 </template>
 
@@ -84,7 +93,7 @@
 import { OrderGetUser } from '@/api/api.js';
 import { hideLoading, showLoading, showModal, showToast } from '@/common/toast.js'
 import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/common/navigation.js'
-
+import LoginApp from '@/components/login-app/login-app.vue'
 
 export default {
 	data() {
@@ -94,8 +103,19 @@ export default {
 			userPrice:0
 		};
 	},
+	components:{
+		LoginApp
+	},
 	methods: {
+		toLogin(){
+			this.$refs.loginApp.open()
+		},
 		init() {
+			if(this.userInformation.position){
+			}else{
+				return
+			}
+			
 			OrderGetUser({
 				method: 'get'
 			}).then(res=>{
@@ -105,18 +125,36 @@ export default {
 			})
 		},
 		setUp() {
-			navigateTo('/pages/personalCenter/changeInformation/changeInformation')
+			if(this.userInformation.position){
+				navigateTo('/pages/personalCenter/changeInformation/changeInformation')
+			}else{
+				this.$refs.loginApp.open()
+				return
+			}		
 		}
 	},
 	onShow() {
-		this.userInformation = JSON.parse(uni.getStorageSync('userInformation')) || {};
+		this.$refs.loginApp.close()
+		this.userInformation = uni.getStorageSync('userInformation')?JSON.parse(uni.getStorageSync('userInformation')) : {};
 		console.log(this.userInformation);
 		this.init();
+		
 	}
 };
 </script>
 
 <style lang="less">
+	.login{
+		margin: 120rpx auto;
+		text-align: center;
+		background: #000;
+		color: #fff;
+		width: 300rpx;
+		height: 90rpx;
+		line-height: 90rpx;
+		border-radius: 12rpx;
+
+	}
 .userName {
 	max-width: 80%;
 	margin: 140rpx auto 10rpx auto !important;
@@ -217,7 +255,7 @@ export default {
 	}
 	.bottomBorder {
 		position: absolute;
-		z-index: 999;
+		z-index: 1;
 		width: 84%;
 		margin: 0 0 0 100rpx;
 		border-bottom: 1rpx solid #dcdcdc;

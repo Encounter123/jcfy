@@ -31,6 +31,8 @@
 			</navigator>
 			<navigator url="../release/release"><view class="release">发布</view></navigator>
 		</view>
+
+		
 	</view>
 </template>
 
@@ -102,11 +104,14 @@ export default {
 		},
 	},
 	onShow() {
-		this.init();
+		let userInformation = uni.getStorageSync('userInformation')?JSON.parse(uni.getStorageSync('userInformation')) : {};
+		console.log(userInformation);
+		if(userInformation.name){
+			this.init();
+		}
 	},
 	onLoad() {
 		// this.$store.commit('setUserIdentity','Buyer')
-
 	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {
@@ -115,12 +120,6 @@ export default {
 	},
 	onPullDownRefresh() {
 		this.init();
-	},
-	onShareAppMessage(res) {
-		return {
-			title: '火速搬砖',
-			path: '/page/start/start'
-		}
 	}
 
 };

@@ -4,7 +4,7 @@
 			<swiper class="swiper" circular autoplay interval="5000" :indicator-dots="true">
 				<swiper-item v-for="(item, index) in imageUrlList" :key="index"><image class="swiperItem" :src="item.bannerImg" mode="aspectFill"></image></swiper-item>
 			</swiper>
-			<spring-box class="swiper-search" :ShowHidden="ShowHidden" @search="search"></spring-box>
+			<spring-box v-if="userInformation.position" class="swiper-search" :ShowHidden="ShowHidden" @search="search"></spring-box>
 		</view>
 
 		<view class="arrivalBg">
@@ -28,6 +28,9 @@
 				<block v-else><no-data></no-data></block>
 			</block>
 		</view>
+		
+		<login-app ref="loginApp"></login-app>
+		
 	</view>
 </template>
 
@@ -38,6 +41,7 @@ import { navigateTo, redirectTo, reLaunch, switchTab, navigateBack } from '@/com
 import SpringBox from '@/components/springBox/springBox.vue';
 import CommonCell from '@/components/commonCell/commonCell.vue';
 import NoData from '@/components/noData/noData.vue';
+import LoginApp from '@/components/login-app/login-app.vue'
 
 export default {
 	data() {
@@ -47,7 +51,7 @@ export default {
 			pageType: 0,
 			value: '',
 			imageUrlList: [],
-
+			userInformation:{},
 			pageSize: 10,
 			pageNum: 1
 		};
@@ -55,7 +59,8 @@ export default {
 	components: {
 		SpringBox,
 		CommonCell,
-		NoData
+		NoData,
+		LoginApp
 	},
 	methods: {
 		toTarget(name) {
@@ -87,13 +92,21 @@ export default {
 					// shoseNo: this.seachInput
 				}
 			}).then(res => {
+				hideLoading();
 				if(res.code==200){
 					this.productList = this.productList.concat(res.rows);
 				}
+			}).catch(()=>{
 				hideLoading();
-			});
+			})
 		},
 		collection(e, id) {
+			if(this.userInformation.position){
+			}else{
+				this.$refs.loginApp.open()
+				return
+			}
+
 			// console.log(e)
 			if (this.productList[e].isCollection) {
 				CollectionEdit({
@@ -148,17 +161,23 @@ export default {
 				if (res.code == 200) {
 					this.productList = this.productList.concat(res.rows);
 				}
-			});
+			}).catch(()=>{
+				
+				hideLoading();
+			})
 		}
 	},
 	onShow() {
+		this.$refs.loginApp.close()
+		this.userInformation = uni.getStorageSync('userInformation')?JSON.parse(uni.getStorageSync('userInformation')) : {};
 		this.productList = [];
 		this.ShowHidden = false;
 		this.pageType = 0;
 		this.init();
 		this.backgroundMap();
 	},
-	onLoad() {},
+	onLoad() {
+	},
 	//页面上拉触底事件的处理函数
 	onReachBottom() {
 		this.pageNum++;
@@ -174,6 +193,12 @@ export default {
 	onPageScroll(e) {
 		// console.log(e)
 		this.ShowHidden = false;
+	},
+	onShareAppMessage(res) {
+		return {
+			title: '火速搬砖',
+			path: '/page/start/start'
+		}
 	}
 };
 </script>

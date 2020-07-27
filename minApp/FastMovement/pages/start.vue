@@ -26,7 +26,8 @@ export default {
 			this.$store.commit('setUserIdentity', userInformation.position==1?'Buyer':'Seller')
 			switchTab('/pages/arrival/arrival');
 		}else{
-			redirectTo('/pages/signIn/signIn');
+			switchTab('/pages/arrival/arrival');
+			// redirectTo('/pages/signIn/signIn');
 		}
 
 	}

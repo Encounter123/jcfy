@@ -128,8 +128,6 @@ export default {
 		},
 		//收藏
 		collection() {
-			console.log(this.item);
-			console.log(this.item.status);
 			this.item.status = false;
 			this.$emit('collection');
 		},

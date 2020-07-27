@@ -2,8 +2,10 @@
 	<view>
 		<view class="arrivalSearch">
 			<view class="arrivalSmallsearch">
-				<view class="arrivalSearchInput"><input confirm-type="搜索" type="text" :placeholder="dateinit" @blur="blur" @focus="focus" @confirm="submit" v-model="inputValue"/></view>
-				<image src="../../static/img/nav.png" mode="aspectFill" @click.stop="HiddenClick()"></image>
+				<view class="arrivalSearchInput"><input confirm-type="搜索" type="text" :placeholder="dateinit" @blur="blur" @focus="focus" @confirm="submit" v-model="inputValue" placeholder-style="color: #333"/></view>
+				<view class="arrivalIcon" >
+					<image src="../../static/img/nav.png" mode="aspectFill" @click.stop="HiddenClick()"></image>
+				</view>
 			</view>
 		</view>
 		<view class="arrivalNavigation" v-if="showHidden">
@@ -148,7 +150,7 @@ export default {
 	box-sizing: border-box;
 	height: 100rpx;
 	line-height: 100rpx;
-	background: rgba(255,255,255,0.5);
+	// background: rgba(255,255,255,0.5);
 	// background: linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0));
 	// box-shadow: 0 0 10rpx #eee;
 	.arrivalSmallsearch {
@@ -170,15 +172,26 @@ export default {
 			// width: 80%;
 			// margin-left: 40rpx;
 			// margin-top: 10rpx;
-			background: rgba(255,255,255,0.1);
+			// background: rgba(255,255,255,0.1);
 			border: 1rpx solid #eee;
 			padding-left: 20rpx;
 			height: 66rpx;
 			border-radius: 60rpx;
+			background: rgba(255,255,255,0.85);
+			color: #333;
+		}
+		.arrivalIcon{
+			width: 70rpx;
+			height: 70rpx;
+			background: rgba(255,255,255,0.85);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 		image {
-			width: 40rpx;
-			height: 40rpx;
+			width: 36rpx;
+			height: 36rpx;
 			// margin-left: 20rpx;
 			// margin-top: 20rpx;
 		}
@@ -207,7 +220,7 @@ export default {
 	.d4 {
 		width: 0;
 		height: 0;
-		margin-left: 170rpx;
+		margin-left: 150rpx;
 		margin-top: -20rpx;
 		border-width: 20rpx;
 		border-style: solid;

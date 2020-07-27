@@ -17,7 +17,7 @@
 				<view style="margin: 30rpx 0 50rpx 0;font-weight: bold;">充值</view>
 				<view class="popup-item">
 					<text>充值金额：</text>
-					<input type="digit" v-model="price" @input="inputDelivery"></input>
+					<input type="number" v-model="price" @input="inputDelivery"></input>
 				</view>
 				<view class="popup-submit" @click="save">充值</view>
 			</view>
@@ -192,9 +192,10 @@
 			height: 70rpx;
 			align-items: center;
 			input{
-				height: 56rpx;
+				height: 66rpx;
 				border-radius: 6rpx;
-				border: 1rpx solid #eee;
+				border: 1rpx solid #ccc;
+				padding-left: 12rpx;
 			}
 		}
 		&-submit{
