@@ -197,7 +197,7 @@ export default {
 	onShareAppMessage(res) {
 		return {
 			title: '火速搬砖',
-			path: '/page/start/start'
+			path: '/pages/start'
 		}
 	}
 };

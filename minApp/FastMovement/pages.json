@@ -138,7 +138,7 @@
 		}, {
 			"path": "pages/retailStore/retailInfo/retailInfo",
 			"style": {
-				"navigationBarTitleText": "店铺名称",
+				"navigationBarTitleText": "店铺",
 				"navigationBarBackgroundColor": "#fff"
 			}
 		}, {
